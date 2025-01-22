@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum LevelCourse {
+  CURTA_DURACAO
+  TECNICO_MEDIO
+  LICENCIATURA
+  RELIGIOSO
+  MESTRADO
+}
+
+enum Period {
+  LABORAL
+  POS_LABORAL
+}
+
+enum Gender {
+  MASCULINO
+  FEMININO
+}
+
+enum MaritalStatus {
+  SOLTEIRO // Solteiro(a)
+  CASADO // Casado(a)
+  DIVORCIADO // Divorciado(a)
+  VIUVO // Viúvo(a)
+}
+
+enum ProvincyAddress {
+  MAPUTO_CIDADE
+  MAPUTO_PROVINCIA
+  GAZA
+  INHAMBANE
+  MANICA
+  SOFALA
+  TETE
+  ZAMBEZIA
+  NAMPULA
+  CABO_DELGADO
+  NIASSA
+}
+
+enum PreLevel {
+  CLASSE_10
+  CLASSE_12
+  LICENCIATURA
+}
+
+enum Type {
+  BI
+  PASSAPORTE
+}
+
+model AcessData {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  contact    String
+  password   String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @map("updated_at")
+  student_id String
+  student    Student   @relation(fields: [student_id], references: [id])
+
+  @@map("acess_data")
+}
+
+model Student {
+  id                 String            @id //Gera o numero de estudante onde os 4 primeiros digitos são o ano de matricula
+  surname            String
+  name               String
+  dataOfBirth        DateTime
+  placeOfBirth       String
+  gender             Gender
+  maritalStatus      MaritalStatus
+  provincyAddress    ProvincyAddress
+  address            String
+  fatherName         String
+  motherName         String
+  documentType       Type
+  documentNumber     String
+  documentIssuedAt   DateTime
+  documentExpiredAt  DateTime
+  nuit               Int
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+  AcessData          AcessData[]
+  Enrollment         Enrollment[]
+  PreSchool          PreSchool[]
+  EducationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
+  educationOfficerId String?
+
+  @@map("student")
+}
+
+model PreSchool {
+  id             String          @id @default(uuid())
+  schoolLevel    PreLevel        @map("school_level")
+  schoolName     String          @map("school_name")
+  schoolProvincy ProvincyAddress @map("school_provincy")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  student_id     String
+  student        Student         @relation(fields: [student_id], references: [id])
+
+  @@map("pre_school")
+}
+
+model EducationOfficer {
+  id              String          @id @default(uuid())
+  fullName        String
+  profession      String
+  dataOfBirth     DateTime        @map("data_of_birth")
+  email           String?         @unique
+  contact         String
+  provincyAddress ProvincyAddress @map("provincy_address")
+  address         String
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  student         Student[]
+
+  @@map("education_officer")
+}
+
+model Course {
+  id                 String       @id @default(uuid())
+  courseName         String       @map("course_name")
+  courseDescription  String?      @map("course_description")
+  courseDuration     Int          @map("course_duration")
+  levelCourse        LevelCourse  @map("level_course")
+  period             Period
+  totalVacancies     Int          @map("total_vacancies")
+  availableVacancies Int?         @map("available_vacancies")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+  Enrollment         Enrollment[]
+  // Discipline         Discipline?  @relation(fields: [disciplineId], references: [id])
+  disciplineId       String?
+
+  @@map("course")
+}
+
+model Enrollment {
+  id         String    @id @default(uuid())
+  student_id String
+  courseId   String    @map("course_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @map("updated_at")
+
+  student Student @relation(fields: [student_id], references: [id])
+  course  Course  @relation(fields: [courseId], references: [id])
+
+  @@map("enrollment")
+}
+
+// model Discipline {
+//   id             String   @id @default(uuid())
+//   disciplineName String  @map("discipline_name")
+
+//   createdAt      DateTime @default(now()) @map("created_at")
+//   updatedAt      DateTime @updatedAt @map("updated_at")
+//   Course         Course[]
+
+//   @@map("discipline")
+// }

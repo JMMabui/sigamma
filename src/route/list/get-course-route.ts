@@ -73,7 +73,7 @@ export const getStudentInCourse: FastifyPluginAsyncZod = async (app, opts) => {
 
     // Contar o número de estudantes inscritos no curso
     const countStudentRegistration = await prismaClient.registration.count({
-      where: { courseId: id },
+      where: { id },
     })
 
     if (!course) {

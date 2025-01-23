@@ -12,7 +12,7 @@ export const createEnrollments: FastifyPluginAsyncZod = async (app, opts) => {
     try {
       const body = createRegistrationRequest.parse(request.body)
       await createRegistration({
-        courseId: body.courseId,
+        course_id: body.courseId,
         student_id: body.student_id,
       })
 

@@ -2,7 +2,7 @@ import z from 'zod'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { createRegistration } from '../../function/registration/create-registration'
 
-export const createEnrollments: FastifyPluginAsyncZod = async (app, opts) => {
+export const createRegistrations: FastifyPluginAsyncZod = async (app, opts) => {
   app.post('/registration', async (request, reply) => {
     const createRegistrationRequest = z.object({
       courseId: z.string(),

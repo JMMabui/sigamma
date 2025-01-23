@@ -66,6 +66,23 @@ enum Status {
   CANCELADO
 }
 
+enum DisciplineType {
+  COMPLEMENTAR
+  NUCLEAR
+}
+
+enum YearStudy {
+  PRIMEIRO_ANO
+  SEGUNDO_ANO
+  TERCEIRO_ANO
+  QUARTO_ANO
+}
+
+enum Semester {
+  PRIMEIRO_SEMESTRE
+  SEGUNDO_SEMESTRE
+}
+
 model AcessData {
   id         String    @id @default(uuid())
   email      String    @unique
@@ -148,8 +165,7 @@ model Course {
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")
   Registration       Registration[]
-  // Discipline         Discipline?  @relation(fields: [disciplineId], references: [id])
-  disciplineId       String?
+  Discipline         Discipline[]
 
   @@map("course")
 }
@@ -168,13 +184,18 @@ model Registration {
   @@map("registration")
 }
 
-// model Discipline {
-//   id             String   @id @default(uuid())
-//   disciplineName String  @map("discipline_name")
+model Discipline {
+  codigo         String         @id
+  disciplineName String         @map("discipline_name")
+  year_study     YearStudy      @map("year_study")
+  semester       Semester
+  hcs            Int            @map("hcs")
+  credits        Int
+  disciplineType DisciplineType @map("discipline_type")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  courseId       String?        @map("course_id")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  Course         Course?        @relation(fields: [courseId], references: [id])
 
-//   createdAt      DateTime @default(now()) @map("created_at")
-//   updatedAt      DateTime @updatedAt @map("updated_at")
-//   Course         Course[]
-
-//   @@map("discipline")
-// }
+  @@map("disciplines")
+}

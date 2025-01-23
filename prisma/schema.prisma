@@ -93,7 +93,7 @@ model Student {
   createdAt          DateTime          @default(now()) @map("created_at")
   updatedAt          DateTime          @updatedAt @map("updated_at")
   AcessData          AcessData[]
-  Enrollment         Enrollment[]
+  Registration         Registration[]
   PreSchool          PreSchool[]
   EducationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
   educationOfficerId String?
@@ -141,14 +141,14 @@ model Course {
   availableVacancies Int?         @map("available_vacancies")
   createdAt          DateTime     @default(now()) @map("created_at")
   updatedAt          DateTime     @updatedAt @map("updated_at")
-  Enrollment         Enrollment[]
+  Registration         Registration[]
   // Discipline         Discipline?  @relation(fields: [disciplineId], references: [id])
   disciplineId       String?
 
   @@map("course")
 }
 
-model Enrollment {
+model Registration {
   id         String    @id @default(uuid())
   student_id String
   courseId   String    @map("course_id")
@@ -158,7 +158,7 @@ model Enrollment {
   student Student @relation(fields: [student_id], references: [id])
   course  Course  @relation(fields: [courseId], references: [id])
 
-  @@map("enrollment")
+  @@map("registration")
 }
 
 // model Discipline {

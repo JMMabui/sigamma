@@ -13,11 +13,11 @@ import {
 } from './route/list/get-course-route'
 import { getAcessData } from './route/list/get-accessData-route'
 import { createCourses } from './route/create/create-course-route'
-import { createEnrollments } from './route/create/create-enrollment-route'
+import { createEnrollments } from './route/create/create-registration-route'
 import {
-  getEnrollmentInCourse,
-  getEnrollments,
-} from './route/list/get-enrollments-route'
+  getRegistrationInCourse,
+  getRegistration,
+} from './route/list/get-registration-route'
 
 const app = fastify()
 
@@ -26,8 +26,8 @@ app.register(getCourse)
 app.register(getCourseId)
 app.register(getAcessData)
 app.register(getStudentId)
-app.register(getEnrollments)
-app.register(getEnrollmentInCourse)
+app.register(getRegistration)
+app.register(getRegistrationInCourse)
 app.register(getStudentInCourse)
 app.register(getCourseInStudent)
 

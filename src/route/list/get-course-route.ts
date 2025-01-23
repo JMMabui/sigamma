@@ -63,7 +63,7 @@ export const getStudentInCourse: FastifyPluginAsyncZod = async (app, opts) => {
         levelCourse: true,
         courseName: true,
         period: true,
-        Enrollment: {
+        Registration: {
           include: {
             student: true,
           },
@@ -72,7 +72,7 @@ export const getStudentInCourse: FastifyPluginAsyncZod = async (app, opts) => {
     })
 
     // Contar o número de estudantes inscritos no curso
-    const countStudentEnrollment = await prismaClient.enrollment.count({
+    const countStudentRegistration = await prismaClient.registration.count({
       where: { courseId: id },
     })
 
@@ -82,7 +82,7 @@ export const getStudentInCourse: FastifyPluginAsyncZod = async (app, opts) => {
 
     return reply
       .status(200)
-      .send({ message: 'Curso encontrado', course, countStudentEnrollment })
+      .send({ message: 'Curso encontrado', course, countStudentRegistration })
   })
 }
 
@@ -109,7 +109,7 @@ export const getCourseInStudent: FastifyPluginAsyncZod = async (app, opts) => {
         id: true,
         name: true,
         surname: true,
-        Enrollment: {
+        Registration: {
           include: {
             course: true,
           },

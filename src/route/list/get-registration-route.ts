@@ -2,15 +2,15 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { prismaClient } from '../../../database/script'
 import z from 'zod'
 
-export const getEnrollments: FastifyPluginAsyncZod = async (app, opts) => {
-  app.get('/enrollment', async (request, reply) => {
-    const enrollment = await prismaClient.enrollment.findMany()
-    return { enrollment }
+export const getRegistration: FastifyPluginAsyncZod = async (app, opts) => {
+  app.get('/registration', async (request, reply) => {
+    const registration = await prismaClient.registration.findMany()
+    return { registration }
   })
 }
 
-export const getEnrollmentId: FastifyPluginAsyncZod = async (app, opts) => {
-  app.get('/enrollment/:id', async (request, reply) => {
+export const getRegistrationId: FastifyPluginAsyncZod = async (app, opts) => {
+  app.get('/registration/:id', async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string(),
     })
@@ -25,25 +25,25 @@ export const getEnrollmentId: FastifyPluginAsyncZod = async (app, opts) => {
     }
     const { id } = result.data
 
-    const enrollment = await prismaClient.enrollment.findUnique({
+    const registration = await prismaClient.registration.findUnique({
       where: { id },
     })
 
-    if (!enrollment) {
+    if (!registration) {
       return reply.status(404).send({ message: 'Matrícula não encontrada' })
     }
 
     return reply
       .status(200)
-      .send({ message: 'Matrícula encontrada', enrollment })
+      .send({ message: 'Matrícula encontrada', registration })
   })
 }
 
-export const getEnrollmentInCourse: FastifyPluginAsyncZod = async (
+export const getRegistrationInCourse: FastifyPluginAsyncZod = async (
   app,
   opts
 ) => {
-  app.get('/enrollment-course/:id', async (request, reply) => {
+  app.get('/registration-course/:id', async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string(),
     })
@@ -58,7 +58,7 @@ export const getEnrollmentInCourse: FastifyPluginAsyncZod = async (
     }
     const { id } = result.data
 
-    const enrollment = await prismaClient.enrollment.findMany({
+    const registration = await prismaClient.registration.findMany({
       where: { id },
       select: {
         course: {
@@ -80,15 +80,15 @@ export const getEnrollmentInCourse: FastifyPluginAsyncZod = async (
 
     return reply
       .status(200)
-      .send({ message: 'Matrículas encontradas', enrollment })
+      .send({ message: 'Matrículas encontradas', registration })
   })
 }
 
-export const getEnrollmentInStudent: FastifyPluginAsyncZod = async (
+export const getRegistrationInStudent: FastifyPluginAsyncZod = async (
   app,
   opts
 ) => {
-  app.get('/enrollment-student/:id', async (request, reply) => {
+  app.get('/registration-student/:id', async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string(),
     })
@@ -103,12 +103,12 @@ export const getEnrollmentInStudent: FastifyPluginAsyncZod = async (
     }
     const { id } = result.data
 
-    const enrollment = await prismaClient.enrollment.findMany({
+    const registration = await prismaClient.registration.findMany({
       where: { id },
     })
 
     return reply
       .status(200)
-      .send({ message: 'Matrículas encontradas', enrollment })
+      .send({ message: 'Matrículas encontradas', registration })
   })
 }

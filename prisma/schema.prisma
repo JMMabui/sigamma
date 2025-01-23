@@ -60,6 +60,12 @@ enum Type {
   PASSAPORTE
 }
 
+enum Status {
+  PENDENTE
+  CONFIRMADO
+  CANCELADO
+}
+
 model AcessData {
   id         String    @id @default(uuid())
   email      String    @unique
@@ -93,7 +99,7 @@ model Student {
   createdAt          DateTime          @default(now()) @map("created_at")
   updatedAt          DateTime          @updatedAt @map("updated_at")
   AcessData          AcessData[]
-  Registration         Registration[]
+  Registration       Registration[]
   PreSchool          PreSchool[]
   EducationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
   educationOfficerId String?
@@ -131,17 +137,17 @@ model EducationOfficer {
 }
 
 model Course {
-  id                 String       @id @default(uuid())
-  courseName         String       @map("course_name")
-  courseDescription  String?      @map("course_description")
-  courseDuration     Int          @map("course_duration")
-  levelCourse        LevelCourse  @map("level_course")
+  id                 String         @id @default(uuid())
+  courseName         String         @map("course_name")
+  courseDescription  String?        @map("course_description")
+  courseDuration     Int            @map("course_duration")
+  levelCourse        LevelCourse    @map("level_course")
   period             Period
-  totalVacancies     Int          @map("total_vacancies")
-  availableVacancies Int?         @map("available_vacancies")
-  createdAt          DateTime     @default(now()) @map("created_at")
-  updatedAt          DateTime     @updatedAt @map("updated_at")
-  Registration         Registration[]
+  totalVacancies     Int            @map("total_vacancies")
+  availableVacancies Int?           @map("available_vacancies")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+  Registration       Registration[]
   // Discipline         Discipline?  @relation(fields: [disciplineId], references: [id])
   disciplineId       String?
 
@@ -149,14 +155,15 @@ model Course {
 }
 
 model Registration {
-  id         String    @id @default(uuid())
-  student_id String
-  courseId   String    @map("course_id")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @map("updated_at")
+  id                 String    @id @default(uuid())
+  student_id         String
+  course_id          String    @map("course_id")
+  registrationStatus Status    @default(PENDENTE) @map("registration_status")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime? @map("updated_at")
 
   student Student @relation(fields: [student_id], references: [id])
-  course  Course  @relation(fields: [courseId], references: [id])
+  course  Course  @relation(fields: [course_id], references: [id])
 
   @@map("registration")
 }

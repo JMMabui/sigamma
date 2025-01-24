@@ -1,5 +1,5 @@
 import { fastify } from 'fastify'
-import { getStudentId, getStudents } from './route/list/get-students-route'
+import { getStudents } from './route/list/get-students-route'
 import { creatingAcessData } from './route/create/create-acessData-route'
 import { deleteAcessData } from './route/delete/delete-acessData-route'
 import { updateAcessData } from './route/update/update-acesseData-route'
@@ -28,7 +28,6 @@ app.register(getStudents)
 app.register(getCourse)
 app.register(getCourseId)
 app.register(getAcessData)
-app.register(getStudentId)
 app.register(getRegistration)
 app.register(getDisciplineRoute)
 app.register(getRegistrationInCourse)

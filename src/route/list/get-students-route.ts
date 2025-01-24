@@ -96,12 +96,24 @@ export const getStudents: FastifyPluginAsyncZod = async (app, opts) => {
     try {
       const student = await prismaClient.student.findUnique({
         where: { id },
-        include: {
+        select: {
+          name: true,
+          surname: true,
+          id: true,
           StudentDiscipline: {
-            include: {
+            select: {
+              status: true,
               discipline: {
-                include: {
-                  Course: true,
+                select: {
+                  codigo: true,
+                  disciplineName: true,
+                  Course: {
+                    select: {
+                      levelCourse: true,
+                      courseName: true,
+                      period: true,
+                    },
+                  },
                 },
               },
             },
@@ -112,6 +124,8 @@ export const getStudents: FastifyPluginAsyncZod = async (app, opts) => {
       if (!student) {
         return reply.status(404).send({ message: 'Estudante não encontrado' })
       }
+
+      console.log(JSON.stringify(student, null, 2))
 
       return reply
         .status(200)

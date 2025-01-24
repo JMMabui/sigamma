@@ -1,13 +1,50 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { createPreschool } from '../../function/preschool/create-preschool'
+import { createdPreInstituto } from '../../function/preInstitute/create-preInstituto'
+import { insertEducationOffice } from '../../function/students/educationOfficers'
+import dayjs from 'dayjs'
 
-export const createdPreSchool: FastifyPluginAsyncZod = async (app, opts) => {
-  app.post('/pre-school', async (request, reply) => {
+const validattionEducationOffice = z.object({
+  fullName: z.string(),
+  profession: z.string(),
+  dataOfBirth: z
+    .string()
+    .refine(data => {
+      return (
+        dayjs(data, 'YYYY-MM-DD', true).isValid(),
+        { message: 'Invalid date format' }
+      )
+    })
+    .transform(data => {
+      return dayjs(data, 'YYYY-MM-DD').toDate()
+    }),
+  email: z.string().email(),
+  contact: z.string(),
+  provincyAddress: z.enum([
+    'MAPUTO_CIDADE',
+    'MAPUTO_PROVINCIA',
+    'GAZA',
+    'INHAMBANE',
+    'MANICA',
+    'SOFALA',
+    'TETE',
+    'ZAMBEZIA',
+    'NAMPULA',
+    'CABO_DELGADO',
+    'NIASSA',
+  ]),
+  address: z.string(),
+})
+
+export const createdPreInstitutos: FastifyPluginAsyncZod = async (
+  app,
+  opts
+) => {
+  app.post('/pre-instituto', async (request, reply) => {
     const createPreSchoolSchema = z.object({
       schoolLevel: z.enum(['CLASSE_10', 'CLASSE_12', 'LICENCIATURA']),
       schoolName: z.string(),
-      schoolProvince: z.enum([
+      schoolProvincy: z.enum([
         'MAPUTO_CIDADE',
         'MAPUTO_PROVINCIA',
         'GAZA',
@@ -20,19 +57,42 @@ export const createdPreSchool: FastifyPluginAsyncZod = async (app, opts) => {
         'CABO_DELGADO',
         'NIASSA',
       ]),
+      student_id: z.string(),
     })
 
     try {
-      const body = createPreSchoolSchema.parse(request.body)
+      const { schoolLevel, schoolName, schoolProvincy, student_id } =
+        createPreSchoolSchema.parse(request.body)
+      const {
+        fullName,
+        profession,
+        dataOfBirth,
+        email,
+        contact,
+        provincyAddress,
+        address,
+      } = validattionEducationOffice.parse(request.body)
 
-      await createPreschool({
-        schoolLevel: body.schoolLevel,
-        schoolName: body.schoolName,
-        schoolProvincy: body.schoolProvince,
+      await createdPreInstituto({
+        schoolLevel,
+        schoolName,
+        schoolProvincy,
+        student_id,
       })
 
-      reply.code(201).send({ message: 'pre-school created successfully' })
-      console.log(body)
+      if (schoolLevel === 'CLASSE_10') {
+        await insertEducationOffice({
+          fullName,
+          profession,
+          dataOfBirth,
+          email,
+          contact,
+          provincyAddress,
+          address,
+        })
+      }
+
+      reply.code(201).send({ message: 'pre-instituto created successfully' })
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.status(400).send({

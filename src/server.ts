@@ -4,7 +4,7 @@ import { creatingAcessData } from './route/create/create-acessData-route'
 import { deleteAcessData } from './route/delete/delete-acessData-route'
 import { updateAcessData } from './route/update/update-acesseData-route'
 import { createdStudents } from './route/create/create-student-route'
-import { createdPreSchool } from './route/create/create-preschool-route'
+import { createdPreInstitutos } from './route/create/create-preschool-route'
 import {
   getCourse,
   getCourseId,
@@ -37,11 +37,10 @@ app.register(getCourseInStudent)
 
 app.register(creatingAcessData)
 app.register(createdStudents)
+app.register(createdPreInstitutos)
 app.register(createCourses)
 app.register(createRegistrations)
 app.register(createDisciplines)
-
-app.register(createdPreSchool)
 
 app.register(updateAcessData)
 app.register(updateCourseIdOnDisciplines)

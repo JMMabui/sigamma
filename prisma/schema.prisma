@@ -64,6 +64,8 @@ enum Status {
   PENDENTE
   CONFIRMADO
   CANCELADO
+  INSCRITO
+  NAO_INSCRITO
 }
 
 enum DisciplineType {
@@ -90,14 +92,14 @@ model AcessData {
   password   String
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @map("updated_at")
-  student_id String
+  student_id String    @unique
   student    Student   @relation(fields: [student_id], references: [id])
 
   @@map("acess_data")
 }
 
 model Student {
-  id                 String            @id //Gera o numero de estudante onde os 4 primeiros digitos são o ano de matricula
+  id                 String              @id //Gera o numero de estudante onde os 4 primeiros digitos são o ano de matricula
   surname            String
   name               String
   dataOfBirth        DateTime
@@ -113,13 +115,14 @@ model Student {
   documentIssuedAt   DateTime
   documentExpiredAt  DateTime
   nuit               Int
-  createdAt          DateTime          @default(now()) @map("created_at")
-  updatedAt          DateTime          @updatedAt @map("updated_at")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
   AcessData          AcessData[]
   Registration       Registration[]
   PreSchool          PreSchool[]
-  EducationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
+  EducationOfficer   EducationOfficer?   @relation(fields: [educationOfficerId], references: [id])
   educationOfficerId String?
+  StudentDiscipline  StudentDiscipline[]
 
   @@map("student")
 }
@@ -185,17 +188,50 @@ model Registration {
 }
 
 model Discipline {
-  codigo         String         @id
-  disciplineName String         @map("discipline_name")
-  year_study     YearStudy      @map("year_study")
-  semester       Semester
-  hcs            Int            @map("hcs")
-  credits        Int
-  disciplineType DisciplineType @map("discipline_type")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  courseId       String?        @map("course_id")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  Course         Course?        @relation(fields: [courseId], references: [id])
+  codigo            String              @id
+  disciplineName    String              @map("discipline_name")
+  year_study        YearStudy           @map("year_study")
+  semester          Semester
+  hcs               Int                 @map("hcs")
+  credits           Int
+  disciplineType    DisciplineType      @map("discipline_type")
+  createdAt         DateTime            @default(now()) @map("created_at")
+  courseId          String?             @map("course_id")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  Course            Course?             @relation(fields: [courseId], references: [id])
+  StudentDiscipline StudentDiscipline[]
+  Teacher           Teacher?            @relation(fields: [teacherId], references: [id])
+  teacherId         String?
 
   @@map("disciplines")
+}
+
+model StudentDiscipline {
+  id           String    @id @default(uuid())
+  student_id   String
+  disciplineId String
+  status       Status    @default(NAO_INSCRITO)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+
+  student    Student    @relation(fields: [student_id], references: [id])
+  discipline Discipline @relation(fields: [disciplineId], references: [codigo])
+
+  @@map("student_discipline")
+}
+
+model Teacher {
+  id              String          @id @default(uuid())
+  fullName        String
+  profession      String
+  dataOfBirth     DateTime        @map("data_of_birth")
+  email           String          @unique
+  contact         String
+  provincyAddress ProvincyAddress @map("provincy_address")
+  address         String
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  Discipline      Discipline[]
+
+  @@map("teacher")
 }

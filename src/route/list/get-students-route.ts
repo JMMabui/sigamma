@@ -82,6 +82,65 @@ export const getStudents: FastifyPluginAsyncZod = async (app, opts) => {
     }
   })
 
+  app.get('/students-course/:id', async (request, reply) => {
+    const result = paramsSchema.safeParse(request.params)
+    if (!result.success) {
+      return reply.status(400).send({
+        message: 'ID inválido',
+        errors: result.error.errors,
+      })
+    }
+
+    const { id } = result.data
+
+    try {
+      const student = await prismaClient.student.findUnique({
+        where: { id },
+        select: {
+          name: true,
+          surname: true,
+          id: true,
+
+          Registration: {
+            select: {
+              course: {
+                select: {
+                  levelCourse: true,
+                  courseName: true,
+                  period: true,
+                },
+              },
+            },
+          },
+          StudentDiscipline: {
+            where: { status: 'NAO_INSCRITO' },
+            select: {
+              discipline: {
+                select: {
+                  codigo: true,
+                  disciplineName: true,
+                  semester: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (!student) {
+        return reply.status(404).send({ message: 'Estudante não encontrado' })
+      }
+
+      console.log(JSON.stringify(student, null, 2))
+
+      return reply
+        .status(200)
+        .send({ message: 'Estudante encontrado', student })
+    } catch (error) {
+      return reply.status(500).send({ message: 'Erro ao buscar estudante' })
+    }
+  })
+
   app.get('/students-course-discipline/:id', async (request, reply) => {
     const result = paramsSchema.safeParse(request.params)
     if (!result.success) {

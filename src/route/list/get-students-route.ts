@@ -1,17 +1,14 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { prismaClient } from '../../../database/script'
 import z from 'zod'
+import type { FastifyTypeInstance } from '../../type'
 
-export const getStudents: FastifyPluginAsyncZod = async (app, opts) => {
+export const getStudents: FastifyPluginAsyncZod = async (
+  app: FastifyTypeInstance,
+  opts
+) => {
   const paramsSchema = z.object({
     id: z.string(),
-  })
-
-  app.get('/students', async (request, reply) => {
-    const students = await prismaClient.student.findMany()
-    const totalStudents = await prismaClient.student.count()
-    console.log(`total de estudentes inscritos: ${totalStudents}`)
-    return students
   })
 
   app.get('/students/:id', async (request, reply) => {

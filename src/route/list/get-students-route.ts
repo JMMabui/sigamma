@@ -41,7 +41,7 @@ export const getStudents: FastifyPluginAsyncZod = async (
     console.log(`numero de estudante: ${numberStudent}`)
     console.log(`nome completo: ${fullName}`)
 
-    return reply.status(200).send({ message: 'Estudante encontrado', student })
+    return reply.status(200).send({ student })
   })
 
   app.get('/students-discipline/:id', async (request, reply) => {
@@ -109,18 +109,18 @@ export const getStudents: FastifyPluginAsyncZod = async (
               },
             },
           },
-          StudentDiscipline: {
-            where: { status: 'NAO_INSCRITO' },
-            select: {
-              discipline: {
-                select: {
-                  codigo: true,
-                  disciplineName: true,
-                  semester: true,
-                },
-              },
-            },
-          },
+          // StudentDiscipline: {
+          //   where: { status: 'NAO_INSCRITO' },
+          //   select: {
+          //     discipline: {
+          //       select: {
+          //         codigo: true,
+          //         disciplineName: true,
+          //         semester: true,
+          //       },
+          //     },
+          //   },
+          // },
         },
       })
 

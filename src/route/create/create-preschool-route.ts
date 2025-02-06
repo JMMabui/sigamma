@@ -38,14 +38,16 @@ export const createdPreInstitutos: FastifyPluginAsyncZod = async (
       try {
         const { schoolLevel, schoolName, schoolProvincy, student_id } =
           request.body
-        await createdPreInstituto({
+        const preinstituto = await createdPreInstituto({
           schoolLevel,
           schoolName,
           schoolProvincy,
           student_id,
         })
 
-        reply.code(201).send({ message: 'pre-instituto created successfully' })
+        reply
+          .code(201)
+          .send({ message: 'pre-instituto created successfully', preinstituto })
       } catch (error) {
         if (error instanceof z.ZodError) {
           return reply.status(400).send({

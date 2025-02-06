@@ -4,6 +4,7 @@ import { createLogin } from '../../function/students/acess data/create-login-dat
 import bcrypt from 'bcrypt'
 import { prismaClient } from '../../../database/script'
 import jwt from 'jsonwebtoken'
+import type { FastifyTypeInstance } from '../../type'
 
 // Função para encontrar o usuário por email
 async function findUserByEmail(email: string) {
@@ -20,47 +21,64 @@ function generateToken(userId: string) {
   return jwt.sign(payload, secretKey, options)
 }
 
-export const creatingAcessData: FastifyPluginAsyncZod = async (app, opts) => {
+export const creatingAcessData: FastifyPluginAsyncZod = async (
+  app: FastifyTypeInstance,
+  opts
+) => {
   // Rota de criação de dados de acesso
-  app.post('/login', async (request, reply) => {
-    const createAcessDataRequest = z.object({
-      email: z.string().email(),
-      password: z.string().min(8),
-      contact: z.string().min(9),
-    })
+  app.post(
+    '/signup',
+    {
+      schema: {
+        tags: ['login'],
+        description: 'create credential to login',
+        body: z.object({
+          email: z.string().email(),
+          password: z.string().min(8),
+          contact: z.string().min(9),
+        }),
+      },
+    },
+    async (request, reply) => {
+      console.log('api de login iniciado')
 
-    try {
-      const { email, password, contact } = createAcessDataRequest.parse(
-        request.body
-      )
+      try {
+        const { email, password, contact } = request.body
 
-      const existingUser = await findUserByEmail(email)
+        console.log('Recebido:', { email, password, contact })
 
-      if (existingUser) {
-        return reply.status(400).send({
-          message: 'Já existe um usuário com este email.',
+        const existingUser = await findUserByEmail(email)
+
+        if (existingUser) {
+          return reply.status(400).send({
+            message: 'Já existe um usuário com este email.',
+          })
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const login = await createLogin({
+          email,
+          contact,
+          password: hashedPassword,
         })
+
+        // console.log(login)
+
+        reply.code(201).send({ login })
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return reply.status(400).send({
+            message: 'Erro de validação',
+            errors: error.errors,
+          })
+        }
+
+        console.error('Database or other server error: ', error)
+        reply.code(500).send({ message: 'Internal server error' })
       }
-
-      const hashedPassword = await bcrypt.hash(password, 10)
-
-      await createLogin({
-        email,
-        contact,
-        password: hashedPassword,
-      })
-
-      reply.code(201).send({ message: 'Acess data created successfully' })
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return reply.status(400).send({
-          message: 'Erro de validação',
-          errors: error.errors,
-        })
-      }
-      reply.code(500).send({ message: 'Internal server error' })
     }
-  })
+  )
 
   // Rota para autenticação/login
   app.post('/auth/login', async (request, reply) => {

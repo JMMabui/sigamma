@@ -77,7 +77,6 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           nuit: z.number().refine(nuit => nuit.toString().length === 9, {
             message: 'O NUIT deve ter exatamente 9 dígitos',
           }),
-          login_id: z.string(),
         }),
       },
     },
@@ -106,7 +105,6 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           documentIssuedAt,
           documentExpiredAt,
           nuit,
-          login_id,
         } = request.body
 
         // Cria o estudante no banco de dados
@@ -127,7 +125,6 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           documentIssuedAt,
           documentExpiredAt,
           nuit,
-          login_id,
         })
 
         console.log(student)
@@ -297,7 +294,7 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           documentIssuedAt,
           documentExpiredAt,
           nuit,
-          login_id: loginData.id, // Associando o loginId do login recém-criado ao estudante
+          // login_id: loginData.id, // Associando o loginId do login recém-criado ao estudante
         })
 
         // Responde com o estudante e os dados de login criados
@@ -347,7 +344,7 @@ export const createdStudents: FastifyPluginAsyncZod = async (
   )
 
   app.put(
-    '/login-student',
+    '/login-student/:id',
     {
       schema: {
         tags: ['update-loginId'],

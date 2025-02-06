@@ -24,7 +24,7 @@ interface createUserRequest {
   documentIssuedAt: Date
   documentExpiredAt: Date
   nuit: number
-  login_id: string
+  // login_id: string
 }
 
 export async function createStudents({
@@ -44,7 +44,7 @@ export async function createStudents({
   documentIssuedAt,
   documentExpiredAt,
   nuit,
-  login_id,
+  // login_id,
 }: createUserRequest) {
   console.log('bd Inicializado')
 
@@ -66,7 +66,7 @@ export async function createStudents({
       documentIssuedAt,
       documentExpiredAt,
       nuit,
-      login_id,
+      // login_id,
     },
   })
 

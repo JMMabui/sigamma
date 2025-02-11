@@ -4,7 +4,27 @@ import z from 'zod'
 
 export const getRegistration: FastifyPluginAsyncZod = async (app, opts) => {
   app.get('/registration', async (request, reply) => {
-    const registration = await prismaClient.registration.findMany()
+    const registration = await prismaClient.registration.findMany({
+      select: {
+        course_id: true,
+        student_id: true,
+        registrationStatus: true,
+        course: {
+          select: {
+            courseName: true,
+            levelCourse: true,
+            period: true,
+          },
+        },
+        student: {
+          select: {
+            surname: true,
+            name: true,
+          },
+        },
+      },
+    })
+
     return { registration }
   })
 }

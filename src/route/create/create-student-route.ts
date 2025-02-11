@@ -77,6 +77,7 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           nuit: z.number().refine(nuit => nuit.toString().length === 9, {
             message: 'O NUIT deve ter exatamente 9 dígitos',
           }),
+          login_id: z.string(),
         }),
       },
     },
@@ -105,6 +106,7 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           documentIssuedAt,
           documentExpiredAt,
           nuit,
+          login_id,
         } = request.body
 
         // Cria o estudante no banco de dados
@@ -125,14 +127,12 @@ export const createdStudents: FastifyPluginAsyncZod = async (
           documentIssuedAt,
           documentExpiredAt,
           nuit,
+          login_id,
         })
 
         console.log(student)
-
         // Responde com o estudante criado
-        reply
-          .code(201)
-          .send({ message: 'Student created successfully', student })
+        reply.code(201).send({ student })
       } catch (error) {
         if (error instanceof z.ZodError) {
           // Retorna detalhes de erro de validação
@@ -151,175 +151,175 @@ export const createdStudents: FastifyPluginAsyncZod = async (
     }
   )
 
-  app.post(
-    '/login-students',
-    {
-      schema: {
-        tags: ['students'],
-        description: 'Create students',
-        body: z.object({
-          surname: z.string(),
-          name: z.string(),
-          dataOfBirth: z
-            .string()
-            .refine(
-              date => {
-                return dayjs(date, 'YYYY-MM-DD', true).isValid()
-              },
-              { message: 'Invalid date format for date of birth' }
-            )
-            .transform(date => {
-              return dayjs(date, 'YYYY-MM-DD').toDate()
-            }),
-          placeOfBirth: z.string(),
-          gender: z.enum(['MASCULINO', 'FEMININO']),
-          maritalStatus: z.enum(['SOLTEIRO', 'CASADO', 'DIVORCIADO', 'VIUVO']),
-          provincyAddress: z.enum([
-            'MAPUTO_CIDADE',
-            'MAPUTO_PROVINCIA',
-            'GAZA',
-            'INHAMBANE',
-            'MANICA',
-            'SOFALA',
-            'TETE',
-            'ZAMBEZIA',
-            'NAMPULA',
-            'CABO_DELGADO',
-            'NIASSA',
-          ]),
-          address: z.string(),
-          fatherName: z.string(),
-          motherName: z.string(),
-          documentType: z.enum(['BI', 'PASSAPORTE']),
-          documentNumber: z.string(),
-          documentIssuedAt: z
-            .string()
-            .refine(
-              date => {
-                return dayjs(date, 'YYYY-MM-DD', true).isValid()
-              },
-              { message: 'Invalid date format for document issued date' }
-            )
-            .transform(date => {
-              return dayjs(date, 'YYYY-MM-DD').toDate()
-            }),
-          documentExpiredAt: z
-            .string()
-            .refine(
-              date => {
-                return dayjs(date, 'YYYY-MM-DD', true).isValid()
-              },
-              { message: 'Invalid date format for document expiration date' }
-            )
-            .transform(date => {
-              return dayjs(date, 'YYYY-MM-DD').toDate()
-            }),
-          nuit: z.number().refine(nuit => nuit.toString().length === 9, {
-            message: 'O NUIT deve ter exatamente 9 dígitos',
-          }),
-          email: z.string().email(),
-          password: z.string().min(8),
-          contact: z.string().min(9),
-        }),
-      },
-    },
-    async (request, reply) => {
-      function generateId() {
-        const year = new Date().getFullYear() // Obtém o ano atual
-        const randomDigits = Math.floor(1000 + Math.random() * 9000) // Garante 4 dígitos aleatórios
-        const id = `${year}${randomDigits}`
-        return id
-      }
+  // app.post(
+  //   '/login-students',
+  //   {
+  //     schema: {
+  //       tags: ['students'],
+  //       description: 'Create students',
+  //       body: z.object({
+  //         surname: z.string(),
+  //         name: z.string(),
+  //         dataOfBirth: z
+  //           .string()
+  //           .refine(
+  //             date => {
+  //               return dayjs(date, 'YYYY-MM-DD', true).isValid()
+  //             },
+  //             { message: 'Invalid date format for date of birth' }
+  //           )
+  //           .transform(date => {
+  //             return dayjs(date, 'YYYY-MM-DD').toDate()
+  //           }),
+  //         placeOfBirth: z.string(),
+  //         gender: z.enum(['MASCULINO', 'FEMININO']),
+  //         maritalStatus: z.enum(['SOLTEIRO', 'CASADO', 'DIVORCIADO', 'VIUVO']),
+  //         provincyAddress: z.enum([
+  //           'MAPUTO_CIDADE',
+  //           'MAPUTO_PROVINCIA',
+  //           'GAZA',
+  //           'INHAMBANE',
+  //           'MANICA',
+  //           'SOFALA',
+  //           'TETE',
+  //           'ZAMBEZIA',
+  //           'NAMPULA',
+  //           'CABO_DELGADO',
+  //           'NIASSA',
+  //         ]),
+  //         address: z.string(),
+  //         fatherName: z.string(),
+  //         motherName: z.string(),
+  //         documentType: z.enum(['BI', 'PASSAPORTE']),
+  //         documentNumber: z.string(),
+  //         documentIssuedAt: z
+  //           .string()
+  //           .refine(
+  //             date => {
+  //               return dayjs(date, 'YYYY-MM-DD', true).isValid()
+  //             },
+  //             { message: 'Invalid date format for document issued date' }
+  //           )
+  //           .transform(date => {
+  //             return dayjs(date, 'YYYY-MM-DD').toDate()
+  //           }),
+  //         documentExpiredAt: z
+  //           .string()
+  //           .refine(
+  //             date => {
+  //               return dayjs(date, 'YYYY-MM-DD', true).isValid()
+  //             },
+  //             { message: 'Invalid date format for document expiration date' }
+  //           )
+  //           .transform(date => {
+  //             return dayjs(date, 'YYYY-MM-DD').toDate()
+  //           }),
+  //         nuit: z.number().refine(nuit => nuit.toString().length === 9, {
+  //           message: 'O NUIT deve ter exatamente 9 dígitos',
+  //         }),
+  //         email: z.string().email(),
+  //         password: z.string().min(8),
+  //         contact: z.string().min(9),
+  //       }),
+  //     },
+  //   },
+  //   async (request, reply) => {
+  //     function generateId() {
+  //       const year = new Date().getFullYear() // Obtém o ano atual
+  //       const randomDigits = Math.floor(1000 + Math.random() * 9000) // Garante 4 dígitos aleatórios
+  //       const id = `${year}${randomDigits}`
+  //       return id
+  //     }
 
-      try {
-        const {
-          surname,
-          name,
-          dataOfBirth,
-          placeOfBirth,
-          gender,
-          maritalStatus,
-          provincyAddress,
-          address,
-          fatherName,
-          motherName,
-          documentType,
-          documentNumber,
-          documentIssuedAt,
-          documentExpiredAt,
-          nuit,
-          email,
-          password,
-          contact,
-        } = request.body
+  //     try {
+  //       const {
+  //         surname,
+  //         name,
+  //         dataOfBirth,
+  //         placeOfBirth,
+  //         gender,
+  //         maritalStatus,
+  //         provincyAddress,
+  //         address,
+  //         fatherName,
+  //         motherName,
+  //         documentType,
+  //         documentNumber,
+  //         documentIssuedAt,
+  //         documentExpiredAt,
+  //         nuit,
+  //         email,
+  //         password,
+  //         contact,
+  //       } = request.body
 
-        // Verificar se já existe um usuário com o mesmo email
-        const existingLogin = await prismaClient.loginData.findFirst({
-          where: {
-            OR: [{ email: email }, { contact: contact }],
-          },
-        })
+  //       // Verificar se já existe um usuário com o mesmo email
+  //       const existingLogin = await prismaClient.loginData.findFirst({
+  //         where: {
+  //           OR: [{ email: email }, { contact: contact }],
+  //         },
+  //       })
 
-        if (existingLogin) {
-          // Se já existir, retornar um erro
-          return reply.status(400).send({
-            message:
-              'Já existe um usuário com este e-mail ou número de contato.',
-          })
-        }
+  //       if (existingLogin) {
+  //         // Se já existir, retornar um erro
+  //         return reply.status(400).send({
+  //           message:
+  //             'Já existe um usuário com este e-mail ou número de contato.',
+  //         })
+  //       }
 
-        // Cria os dados de login primeiro
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const loginData = await createLogin({
-          email,
-          contact,
-          password: hashedPassword,
-        })
+  //       // Cria os dados de login primeiro
+  //       const hashedPassword = await bcrypt.hash(password, 10)
+  //       const loginData = await createLogin({
+  //         email,
+  //         contact,
+  //         password: hashedPassword,
+  //       })
 
-        // Cria o estudante com loginId associado
-        const student = await createStudents({
-          id: generateId(),
-          surname,
-          name,
-          dataOfBirth,
-          placeOfBirth,
-          gender,
-          maritalStatus,
-          provincyAddress,
-          address,
-          fatherName,
-          motherName,
-          documentType,
-          documentNumber,
-          documentIssuedAt,
-          documentExpiredAt,
-          nuit,
-          // login_id: loginData.id, // Associando o loginId do login recém-criado ao estudante
-        })
+  //       // Cria o estudante com loginId associado
+  //       const student = await createStudents({
+  //         id: generateId(),
+  //         surname,
+  //         name,
+  //         dataOfBirth,
+  //         placeOfBirth,
+  //         gender,
+  //         maritalStatus,
+  //         provincyAddress,
+  //         address,
+  //         fatherName,
+  //         motherName,
+  //         documentType,
+  //         documentNumber,
+  //         documentIssuedAt,
+  //         documentExpiredAt,
+  //         nuit,
+  //         login_id: loginData.id, // Associando o loginId do login recém-criado ao estudante
+  //       })
 
-        // Responde com o estudante e os dados de login criados
-        reply.code(201).send({
-          message: 'Student created successfully',
-          student,
-          loginData: { email, contact },
-        })
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          // Retorna detalhes de erro de validação
-          return reply.status(400).send({
-            message: 'Validation error',
-            details: error.errors,
-          })
-        }
+  //       // Responde com o estudante e os dados de login criados
+  //       reply.code(201).send({
+  //         message: 'Student created successfully',
+  //         student,
+  //         loginData: { email, contact },
+  //       })
+  //     } catch (error) {
+  //       if (error instanceof z.ZodError) {
+  //         // Retorna detalhes de erro de validação
+  //         return reply.status(400).send({
+  //           message: 'Validation error',
+  //           details: error.errors,
+  //         })
+  //       }
 
-        // Caso de erro genérico, como falha no banco
-        console.error('Database or other server error: ', error)
-        reply.code(500).send({
-          message: 'Internal server error, please try again later.',
-        })
-      }
-    }
-  )
+  //       // Caso de erro genérico, como falha no banco
+  //       console.error('Database or other server error: ', error)
+  //       reply.code(500).send({
+  //         message: 'Internal server error, please try again later.',
+  //       })
+  //     }
+  //   }
+  // )
 
   app.get(
     '/students',

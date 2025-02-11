@@ -24,7 +24,7 @@ interface createUserRequest {
   documentIssuedAt: Date
   documentExpiredAt: Date
   nuit: number
-  // login_id: string
+  login_id: string
 }
 
 export async function createStudents({
@@ -44,7 +44,7 @@ export async function createStudents({
   documentIssuedAt,
   documentExpiredAt,
   nuit,
-  // login_id,
+  login_id,
 }: createUserRequest) {
   console.log('bd Inicializado')
 
@@ -66,31 +66,9 @@ export async function createStudents({
       documentIssuedAt,
       documentExpiredAt,
       nuit,
-      // login_id,
+      login_id,
     },
   })
 
   return student
-  // Primeiro cria o estudante
-  // const student = await prismaClient.student.create({
-  //   data: {
-  //     id,
-  //     surname,
-  //     name,
-  //     dataOfBirth,
-  //     placeOfBirth,
-  //     gender,
-  //     maritalStatus,
-  //     provincyAddress,
-  //     address,
-  //     fatherName,
-  //     motherName,
-  //     documentType,
-  //     documentNumber,
-  //     documentIssuedAt,
-  //     documentExpiredAt,
-  //     nuit,
-  //   },
-  // })
-  // return student
 }

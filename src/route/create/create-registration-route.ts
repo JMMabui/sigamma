@@ -25,12 +25,14 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
       try {
         const { course_id, student_id } = request.body
 
-        await createRegistration({
+        const registration = await createRegistration({
           course_id,
           student_id,
         })
 
-        reply.code(201).send({ message: 'enrollment created successfully' })
+        reply
+          .code(201)
+          .send({ message: 'enrollment created successfully', registration })
       } catch (error) {
         if (error instanceof z.ZodError) {
           return reply.status(400).send({

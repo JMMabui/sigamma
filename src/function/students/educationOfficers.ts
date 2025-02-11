@@ -20,7 +20,7 @@ export async function insertEducationOffice({
   provincyAddress,
   address,
 }: createEducationOfficerRequest) {
-  await prismaClient.educationOfficer.create({
+  const data = await prismaClient.educationOfficer.create({
     data: {
       fullName,
       profession,
@@ -31,4 +31,6 @@ export async function insertEducationOffice({
       address,
     },
   })
+
+  return data
 }

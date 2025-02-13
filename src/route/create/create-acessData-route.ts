@@ -13,6 +13,17 @@ async function findUserByEmail(email: string) {
   })
 }
 
+async function findStudentId(id: string) {
+  const student_id = prismaClient.student.findUnique({
+    where: { login_id: id },
+    select: {
+      id: true,
+    },
+  })
+
+  return student_id
+}
+
 // Função para gerar o JWT token
 function generateToken(userId: string) {
   const payload = { userId }
@@ -94,7 +105,7 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
 
       if (!user) {
         return reply.status(400).send({
-          message: 'Email ou senha inválidos.',
+          message: 'Email inválidos.',
         })
       }
 
@@ -103,16 +114,21 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
 
       if (!isPasswordValid) {
         return reply.status(400).send({
-          message: 'Email ou senha inválidos.',
+          message: 'Senha inválidos.',
         })
       }
+
+      const student_id = await findStudentId(user.id)
 
       // Gerar o token JWT
       const token = generateToken(user.id)
 
+      console.log('id do estudante', student_id)
+
       reply.code(200).send({
         message: 'Login realizado com sucesso.',
         token,
+        student_id,
       })
     } catch (error) {
       if (error instanceof z.ZodError) {

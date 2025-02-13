@@ -8,23 +8,6 @@ export const createdStudents: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
   opts
 ) => {
-  // Lista de províncias
-  const provinces = [
-    'MAPUTO_CIDADE',
-    'MAPUTO_PROVINCIA',
-    'GAZA',
-    'INHAMBANE',
-    'MANICA',
-    'SOFALA',
-    'TETE',
-    'ZAMBEZIA',
-    'NAMPULA',
-    'CABO_DELGADO',
-    'NIASSA',
-  ] as const
-
-  const ProvinceEnum = z.enum(provinces)
-
   // Definindo o schema para a criação de um estudante
   const createStudentSchema = z.object({
     fullName: z.string(),
@@ -36,7 +19,19 @@ export const createdStudents: FastifyPluginAsyncZod = async (
       }),
     email: z.string().email(),
     contact: z.string(),
-    provincyAddress: ProvinceEnum,
+    provincyAddress: z.enum([
+      'MAPUTO_CIDADE',
+      'MAPUTO_PROVINCIA',
+      'GAZA',
+      'INHAMBANE',
+      'MANICA',
+      'SOFALA',
+      'TETE',
+      'ZAMBEZIA',
+      'NAMPULA',
+      'CABO_DELGADO',
+      'NIASSA',
+    ]),
     address: z.string(),
   })
 

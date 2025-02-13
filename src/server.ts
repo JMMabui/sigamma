@@ -75,9 +75,11 @@ app.register(updateCourseIdOnDisciplines)
 app.register(deleteAcessData)
 
 app
-  .listen({
-    port: 3333,
-  })
+  .listen({ port: 3333, host: '0.0.0.0' })
   .then(() => {
     console.log('http server running')
+  })
+  .catch(err => {
+    console.error(err)
+    process.exit(1)
   })

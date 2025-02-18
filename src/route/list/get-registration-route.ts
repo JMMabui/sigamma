@@ -31,31 +31,38 @@ export const getRegistration: FastifyPluginAsyncZod = async (app, opts) => {
 
 export const getRegistrationId: FastifyPluginAsyncZod = async (app, opts) => {
   app.get('/registration/:id', async (request, reply) => {
-    const paramsSchema = z.object({
-      id: z.string(),
-    })
+    try {
+      console.log('API iniciada')
 
-    const result = paramsSchema.safeParse(request.params)
+      const paramsSchema = z.object({ id: z.string() })
+      console.log(request.params)
 
-    if (!result.success) {
-      return reply.status(400).send({
-        message: 'ID inválido',
-        errors: result.error.errors,
+      const result = paramsSchema.safeParse(request.params)
+
+      if (!result.success) {
+        return reply.status(400).send({
+          message: 'ID inválido',
+          errors: result.error.errors,
+        })
+      }
+
+      const { id } = result.data
+      const registration = await prismaClient.registration.findMany({
+        where: { student_id: id },
       })
+
+      if (registration.length === 0) {
+        return reply.status(404).send({ message: 'Matrícula não encontrada' })
+      }
+
+      console.log(registration)
+      return reply
+        .status(200)
+        .send({ message: 'Matrícula encontrada', registration })
+    } catch (error) {
+      console.error('Erro na API:', error)
+      return reply.status(500).send({ message: 'Erro interno do servidor' })
     }
-    const { id } = result.data
-
-    const registration = await prismaClient.registration.findUnique({
-      where: { id },
-    })
-
-    if (!registration) {
-      return reply.status(404).send({ message: 'Matrícula não encontrada' })
-    }
-
-    return reply
-      .status(200)
-      .send({ message: 'Matrícula encontrada', registration })
   })
 }
 

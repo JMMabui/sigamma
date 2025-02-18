@@ -32,6 +32,8 @@ export const createCourses: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
+      console.log('api iniciada')
+      console.log(request.body)
       try {
         const {
           availableVacancies,
@@ -42,7 +44,7 @@ export const createCourses: FastifyPluginAsyncZod = async (
           period,
           totalVacancies,
         } = request.body
-        await createCourse({
+        const course = await createCourse({
           courseName,
           courseDuration,
           courseDescription,
@@ -52,7 +54,9 @@ export const createCourses: FastifyPluginAsyncZod = async (
           availableVacancies,
         })
 
-        return reply.code(201).send({ message: 'Course created successfully' })
+        return reply
+          .code(201)
+          .send({ message: 'Course created successfully', course })
       } catch (error) {
         if (error instanceof z.ZodError) {
           return reply.status(400).send({

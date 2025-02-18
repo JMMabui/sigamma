@@ -24,11 +24,6 @@ export const getStudents: FastifyPluginAsyncZod = async (
 
     const student = await prismaClient.student.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        surname: true,
-      },
     })
 
     if (!student) {

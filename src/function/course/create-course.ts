@@ -20,7 +20,7 @@ export async function createCourse({
   totalVacancies,
   availableVacancies,
 }: createCourseRequest) {
-  await prismaClient.course.create({
+  const course = await prismaClient.course.create({
     data: {
       courseName,
       courseDescription,
@@ -31,4 +31,6 @@ export async function createCourse({
       availableVacancies,
     },
   })
+
+  return course
 }

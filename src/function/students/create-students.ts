@@ -24,7 +24,7 @@ interface createUserRequest {
   documentIssuedAt: Date
   documentExpiredAt: Date
   nuit: number
-  login_id: string
+  login_id: string | null
 }
 
 export async function createStudents({
@@ -48,27 +48,34 @@ export async function createStudents({
 }: createUserRequest) {
   console.log('bd Inicializado')
 
-  const student = await prismaClient.student.create({
-    data: {
-      id,
-      surname,
-      name,
-      dataOfBirth,
-      placeOfBirth,
-      gender,
-      maritalStatus,
-      provincyAddress,
-      address,
-      fatherName,
-      motherName,
-      documentType,
-      documentNumber,
-      documentIssuedAt,
-      documentExpiredAt,
-      nuit,
-      login_id,
-    },
-  })
+  try {
+    const student = await prismaClient.student.create({
+      data: {
+        id,
+        surname,
+        name,
+        dataOfBirth,
+        placeOfBirth,
+        gender,
+        maritalStatus,
+        provincyAddress,
+        address,
+        fatherName,
+        motherName,
+        documentType,
+        documentNumber,
+        documentIssuedAt,
+        documentExpiredAt,
+        nuit,
+        login_id,
+      },
+    })
 
-  return student
+    // Caso a criação do estudante seja bem-sucedida, pode retornar uma resposta ou apenas continuar o fluxo
+    console.log('Estudante criado com sucesso:', student)
+    return student // ou outra resposta que você precise
+  } catch (error) {
+    // Captura de erro
+    console.error('Erro ao criar o estudante:', error)
+  }
 }

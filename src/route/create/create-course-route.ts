@@ -1,5 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import { z } from 'zod'
 import { createCourse } from '../../function/course/create-course'
 import type { FastifyTypeInstance } from '../../type'

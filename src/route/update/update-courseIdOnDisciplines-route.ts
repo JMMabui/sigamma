@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 
 export const updateCourseIdOnDisciplines: FastifyPluginAsyncZod = async (
   app,

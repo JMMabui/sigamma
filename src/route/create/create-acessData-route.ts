@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { createLogin } from '../../function/students/acess data/create-login-data'
 import bcrypt from 'bcrypt'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import jwt from 'jsonwebtoken'
 import type { FastifyTypeInstance } from '../../type'
 

@@ -4,7 +4,7 @@ import type {
   ProvincyAddress,
   Type,
 } from '@prisma/client'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import bcrypt from 'bcryptjs'
 import dayjs from 'dayjs'
 import z from 'zod'

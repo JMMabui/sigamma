@@ -1,5 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import { z } from 'zod'
 
 export const updateAcessData: FastifyPluginAsyncZod = async (app, opts) => {
@@ -18,7 +18,7 @@ export const updateAcessData: FastifyPluginAsyncZod = async (app, opts) => {
       const { email, password } = bodySchema.parse(request.body)
       const updatedAt = new Date().toISOString()
 
-      await prismaClient.acessData.update({
+      await prismaClient.loginData.update({
         where: {
           id,
         },

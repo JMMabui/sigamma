@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import { createdPreInstituto } from '../../function/preInstitute/create-preInstituto'
 import type { FastifyTypeInstance } from '../../type'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 
 export const createdPreInstitutos: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

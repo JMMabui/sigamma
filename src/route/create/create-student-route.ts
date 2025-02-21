@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import bcrypt from 'bcrypt'
 import { createStudents } from '../../function/students/create-students'
 import type { FastifyTypeInstance } from '../../type'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import { createLogin } from '../../function/students/acess data/create-login-data'
 
 export const createdStudents: FastifyPluginAsyncZod = async (

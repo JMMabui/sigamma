@@ -1,5 +1,5 @@
 import { string } from 'zod'
-import { prismaClient } from '../../../../database/script'
+import { prismaClient } from '../../../database/script'
 
 interface createLoginSchema {
   email: string

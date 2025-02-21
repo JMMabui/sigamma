@@ -1,5 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import { z } from 'zod'
 
 export const deleteAcessData: FastifyPluginAsyncZod = async (app, opts) => {
@@ -8,7 +8,7 @@ export const deleteAcessData: FastifyPluginAsyncZod = async (app, opts) => {
       id: z.string(),
     })
     const { id } = deleteAcessDataRequest.parse(request.params)
-    await prismaClient.acessData.delete({
+    await prismaClient.loginData.delete({
       where: {
         id,
       },

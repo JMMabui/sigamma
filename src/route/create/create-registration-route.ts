@@ -4,7 +4,7 @@ import {
   createRegistration,
   createRegistrationWithConfirmationStatus,
 } from '../../function/registration/create-registration'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../../database/script'
 import type { FastifyTypeInstance } from '../../type'
 import {
   findCourseById,

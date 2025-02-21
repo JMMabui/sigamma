@@ -32,8 +32,6 @@ export const createCourses: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
-      console.log('api iniciada')
-      console.log(request.body)
       try {
         const {
           availableVacancies,

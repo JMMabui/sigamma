@@ -51,12 +51,8 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
-      console.log('api de login iniciado')
-
       try {
         const { email, password, contact } = request.body
-
-        console.log('Recebido:', { email, password, contact })
 
         const existingUser = await findUserByEmail(email)
 
@@ -74,8 +70,6 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
           password: hashedPassword,
         })
 
-        // console.log(login)
-
         reply.code(201).send({ login })
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -84,8 +78,6 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
             errors: error.errors,
           })
         }
-
-        console.error('Database or other server error: ', error)
         reply.code(500).send({ message: 'Internal server error' })
       }
     }
@@ -122,8 +114,6 @@ export const creatingAcessData: FastifyPluginAsyncZod = async (
 
       // Gerar o token JWT
       const token = generateToken(user.id)
-
-      console.log('id do estudante', student_id)
 
       reply.code(200).send({
         message: 'Login realizado com sucesso.',

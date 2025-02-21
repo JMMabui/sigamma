@@ -46,8 +46,6 @@ export async function createStudents({
   nuit,
   login_id,
 }: createUserRequest) {
-  console.log('bd Inicializado')
-
   try {
     const student = await prismaClient.student.create({
       data: {
@@ -72,7 +70,6 @@ export async function createStudents({
     })
 
     // Caso a criação do estudante seja bem-sucedida, pode retornar uma resposta ou apenas continuar o fluxo
-    console.log('Estudante criado com sucesso:', student)
     return student // ou outra resposta que você precise
   } catch (error) {
     // Captura de erro

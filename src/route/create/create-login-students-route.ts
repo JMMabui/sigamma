@@ -115,8 +115,6 @@ export const createdStudentsLogin: FastifyPluginAsyncZod = async (
           loginData,
         })
 
-        console.log(student)
-
         // Retornando a resposta de sucesso
         reply.code(201).send(student)
       } catch (error) {

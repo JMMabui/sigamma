@@ -11,6 +11,10 @@ interface createDisciplinesRequest {
   disciplineType: DisciplineType
 }
 
+interface createSubjectsResponse extends createDisciplinesRequest {
+  courseId: string
+}
+
 export async function createDiscipline({
   codigo,
   credits,
@@ -20,7 +24,7 @@ export async function createDiscipline({
   semester,
   year_study,
 }: createDisciplinesRequest) {
-  await prismaClient.discipline.create({
+  const subject = await prismaClient.discipline.create({
     data: {
       codigo,
       credits,
@@ -29,6 +33,42 @@ export async function createDiscipline({
       hcs,
       semester,
       year_study,
+    },
+  })
+
+  return subject
+}
+
+export async function createSubjects({
+  codigo,
+  credits,
+  disciplineName,
+  disciplineType,
+  hcs,
+  semester,
+  year_study,
+  courseId,
+}: createSubjectsResponse) {
+  const subject = await prismaClient.discipline.create({
+    data: {
+      codigo,
+      credits,
+      disciplineName,
+      disciplineType,
+      hcs,
+      semester,
+      year_study,
+      courseId,
+    },
+  })
+
+  return subject
+}
+
+export function findSubjectByCodigo(codigo: string) {
+  return prismaClient.discipline.findFirst({
+    where: {
+      codigo,
     },
   })
 }

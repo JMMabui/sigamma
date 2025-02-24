@@ -30,6 +30,7 @@ import {
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { createdStudentsLogin } from './route/create/create-login-students-route'
+import { Student_Subject } from './route/create/student_subject'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -68,6 +69,8 @@ app.register(createdPreInstitutos)
 app.register(createCourses)
 app.register(createRegistrations)
 app.register(createDisciplines)
+
+app.register(Student_Subject)
 
 app.register(updateAcessData)
 app.register(updateCourseIdOnDisciplines)

@@ -76,3 +76,10 @@ export async function createStudents({
     console.error('Erro ao criar o estudante:', error)
   }
 }
+
+export const findStudentById = async (studentId: string) => {
+  const student = await prismaClient.student.findUnique({
+    where: { id: studentId },
+  })
+  return student
+}

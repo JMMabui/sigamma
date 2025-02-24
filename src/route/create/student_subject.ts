@@ -4,6 +4,7 @@ import type { FastifyTypeInstance } from '../../type'
 import { createStudentSubject } from '../../function/registration/student_subject'
 import { findStudentById } from '../../function/students/create-students'
 import { findSubjectByCodigo } from '../../function/registration/disciplines/create-disciplines'
+import { prismaClient } from '../../database/script'
 
 export const Student_Subject: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
@@ -63,6 +64,20 @@ export const Student_Subject: FastifyPluginAsyncZod = async (
           message: 'Internal server error, please try again later.',
         })
       }
+    }
+  )
+
+  app.get(
+    '/students_subjects',
+    {
+      schema: {
+        tags: ['students_subjects'],
+        description: 'List all students and subjects',
+      },
+    },
+    async (request, reply) => {
+      const student_subject = await prismaClient.studentDiscipline.findMany()
+      return { student_subject }
     }
   )
 }

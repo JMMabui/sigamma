@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import dayjs from 'dayjs'
-import bcrypt from 'bcrypt'
 import { createStudents } from '../../function/students/create-students'
 import type { FastifyTypeInstance } from '../../type'
 import { prismaClient } from '../../database/script'

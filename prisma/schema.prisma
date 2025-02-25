@@ -55,7 +55,7 @@ enum PreLevel {
   LICENCIATURA
 }
 
-enum Type {
+enum DocumentType {
   BI
   PASSAPORTE
 }
@@ -91,6 +91,17 @@ enum Result {
   REPROVADO
 }
 
+enum StatusClasses {
+  EM_ATIVIDADE
+  DESATIVADO
+}
+
+enum TeacherType {
+  COORDENADOR
+  DOCENTE
+  AUXILIAR
+}
+
 model LoginData {
   id        String    @id @default(uuid())
   email     String    @unique
@@ -116,7 +127,7 @@ model Student {
   address            String
   fatherName         String            @map("father_name")
   motherName         String            @map("mother_name")
-  documentType       Type              @map("document_type")
+  documentType       DocumentType      @map("document_type")
   documentNumber     String            @map("document_number")
   documentIssuedAt   DateTime          @map("document_issued_at")
   documentExpiredAt  DateTime          @map("document_expired_at")
@@ -133,6 +144,7 @@ model Student {
   Registration      Registration[] // Relacionamento com Registration
   PreSchool         PreSchool[] // Relacionamento com PreSchool
   StudentDiscipline StudentDiscipline[] // Relacionamento com StudentDiscipline
+  StudentsClasses   StudentsClasses[]
 
   @@map("student")
 }
@@ -179,6 +191,7 @@ model Course {
   updatedAt          DateTime       @updatedAt @map("updated_at")
   Registration       Registration[]
   Discipline         Discipline[]
+  Classes            Classes[]
 
   @@map("course")
 }
@@ -197,6 +210,20 @@ model Registration {
   @@map("registration")
 }
 
+model Classes {
+  id              String            @id @default(uuid())
+  className       String            @map("class_name")
+  course_id       String            @map("course_id")
+  description     String
+  status          StatusClasses     @default(DESATIVADO)
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime?         @map("updated_at")
+  course          Course            @relation(fields: [course_id], references: [id])
+  StudentsClasses StudentsClasses[]
+
+  @@map("classes")
+}
+
 model Discipline {
   codigo            String              @id
   disciplineName    String              @map("discipline_name")
@@ -210,8 +237,7 @@ model Discipline {
   updatedAt         DateTime            @updatedAt @map("updated_at")
   Course            Course?             @relation(fields: [courseId], references: [id])
   StudentDiscipline StudentDiscipline[]
-  Teacher           Teacher?            @relation(fields: [teacherId], references: [id])
-  teacherId         String?
+  TeacherDiscipline TeacherDiscipline[]
 
   @@map("disciplines")
 }
@@ -232,17 +258,41 @@ model StudentDiscipline {
 }
 
 model Teacher {
-  id              String          @id @default(uuid())
-  fullName        String
-  profession      String
-  dataOfBirth     DateTime        @map("data_of_birth")
-  email           String          @unique
-  contact         String
-  provincyAddress ProvincyAddress @map("provincy_address")
-  address         String
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
-  Discipline      Discipline[]
+  id                String              @id @default(uuid())
+  fullName          String
+  email             String              @unique
+  contact           String
+  profession        String
+  type              TeacherType
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  TeacherDiscipline TeacherDiscipline[]
 
   @@map("teacher")
+}
+
+model TeacherDiscipline {
+  id           String    @id @default(uuid())
+  teacher_id   String
+  disciplineId String
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+
+  teacher    Teacher    @relation(fields: [teacher_id], references: [id])
+  discipline Discipline @relation(fields: [disciplineId], references: [codigo])
+
+  @@map("teacher_discipline")
+}
+
+model StudentsClasses {
+  id         String    @id @default(uuid())
+  student_id String
+  class_id   String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @map("updated_at")
+
+  student Student @relation(fields: [student_id], references: [id])
+  classes Classes @relation(fields: [class_id], references: [id])
+
+  @@map("students_classes")
 }

@@ -12,63 +12,63 @@ export const createDisciplines: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
   opts
 ) => {
-  app.post(
-    '/disciplines',
-    {
-      schema: {
-        tags: ['disciplines'],
-        description: 'create disciplines',
-        body: z.object({
-          codigo: z.string(),
-          disciplineName: z.string(),
-          year_study: z.enum([
-            'PRIMEIRO_ANO',
-            'SEGUNDO_ANO',
-            'TERCEIRO_ANO',
-            'QUARTO_ANO',
-          ]),
-          semester: z.enum(['PRIMEIRO_SEMESTRE', 'SEGUNDO_SEMESTRE']),
-          hcs: z.number(),
-          credits: z.number(),
-          disciplineType: z.enum(['COMPLEMENTAR', 'NUCLEAR']),
-        }),
-      },
-    },
-    async (request, reply) => {
-      try {
-        const {
-          codigo,
-          credits,
-          disciplineName,
-          disciplineType,
-          hcs,
-          semester,
-          year_study,
-        } = request.body
-        const subject = await createDiscipline({
-          codigo,
-          credits,
-          disciplineName,
-          disciplineType,
-          hcs,
-          semester,
-          year_study,
-        })
+  // app.post(
+  //   '/subjects',
+  //   {
+  //     schema: {
+  //       tags: ['Subjects'],
+  //       description: 'create disciplines',
+  //       body: z.object({
+  //         codigo: z.string(),
+  //         disciplineName: z.string(),
+  //         year_study: z.enum([
+  //           'PRIMEIRO_ANO',
+  //           'SEGUNDO_ANO',
+  //           'TERCEIRO_ANO',
+  //           'QUARTO_ANO',
+  //         ]),
+  //         semester: z.enum(['PRIMEIRO_SEMESTRE', 'SEGUNDO_SEMESTRE']),
+  //         hcs: z.number(),
+  //         credits: z.number(),
+  //         disciplineType: z.enum(['COMPLEMENTAR', 'NUCLEAR']),
+  //       }),
+  //     },
+  //   },
+  //   async (request, reply) => {
+  //     try {
+  //       const {
+  //         codigo,
+  //         credits,
+  //         disciplineName,
+  //         disciplineType,
+  //         hcs,
+  //         semester,
+  //         year_study,
+  //       } = request.body
+  //       const subject = await createDiscipline({
+  //         codigo,
+  //         credits,
+  //         disciplineName,
+  //         disciplineType,
+  //         hcs,
+  //         semester,
+  //         year_study,
+  //       })
 
-        return reply
-          .code(201)
-          .send({ message: 'Discipline created successfully', subject })
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          return reply.status(400).send({
-            message: 'Erro de validação',
-            errors: error.errors,
-          })
-        }
-        reply.code(500).send({ message: 'Internal server error' })
-      }
-    }
-  )
+  //       return reply
+  //         .code(201)
+  //         .send({ message: 'Discipline created successfully', subject })
+  //     } catch (error) {
+  //       if (error instanceof z.ZodError) {
+  //         return reply.status(400).send({
+  //           message: 'Erro de validação',
+  //           errors: error.errors,
+  //         })
+  //       }
+  //       reply.code(500).send({ message: 'Internal server error' })
+  //     }
+  //   }
+  // )
 
   app.post(
     '/subjects',
@@ -135,10 +135,10 @@ export const createDisciplines: FastifyPluginAsyncZod = async (
   )
 
   app.get(
-    '/discipline',
+    '/subjects',
     {
       schema: {
-        tags: ['disciplines'],
+        tags: ['Subjects'],
         description: 'list all disciplines',
       },
     },

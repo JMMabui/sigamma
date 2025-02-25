@@ -2,9 +2,9 @@ import type {
   Gender,
   MaritalStatus,
   ProvincyAddress,
-  Type,
+  DocumentType,
 } from '@prisma/client'
-import { prismaClient } from '../../database/script'
+import { prismaClient } from '../database/script'
 
 interface createUserRequest {
   // Gerado através de uma função que gera um id único de acordo com os requisitos
@@ -19,7 +19,7 @@ interface createUserRequest {
   address: string
   fatherName: string
   motherName: string
-  documentType: Type
+  documentType: DocumentType
   documentNumber: string
   documentIssuedAt: Date
   documentExpiredAt: Date

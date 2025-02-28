@@ -5,9 +5,17 @@ import type {
   DocumentType,
 } from '@prisma/client'
 import { prismaClient } from '../database/script'
+import bcrypt from 'bcryptjs'
 
-interface createUserRequest {
-  // Gerado através de uma função que gera um id único de acordo com os requisitos
+// Definição do tipo para loginData
+interface LoginData {
+  email: string
+  password: string
+  contact: string
+}
+
+// Definição do tipo para os dados do estudante
+interface CreateStudentSchema {
   id: string
   surname: string
   name: string
@@ -24,10 +32,11 @@ interface createUserRequest {
   documentIssuedAt: Date
   documentExpiredAt: Date
   nuit: number
-  login_id: string | null
+  loginData: LoginData // Alteração para tipo específico
 }
 
-export async function createStudents({
+// Função para criar o estudante
+export async function createStudent({
   id,
   surname,
   name,
@@ -44,9 +53,22 @@ export async function createStudents({
   documentIssuedAt,
   documentExpiredAt,
   nuit,
-  login_id,
-}: createUserRequest) {
+  loginData,
+}: CreateStudentSchema) {
   try {
+    // Hash da senha
+    const hashedPassword = await bcrypt.hash(loginData.password, 10)
+
+    // Criando o loginData primeiro
+    const createdLoginData = await prismaClient.loginData.create({
+      data: {
+        email: loginData.email,
+        contact: loginData.contact,
+        password: hashedPassword,
+      },
+    })
+
+    // Agora criando o estudante e associando o loginData criado
     const student = await prismaClient.student.create({
       data: {
         id,
@@ -65,21 +87,18 @@ export async function createStudents({
         documentIssuedAt,
         documentExpiredAt,
         nuit,
-        login_id,
+        loginData: {
+          connect: { id: createdLoginData.id },
+        },
       },
     })
 
-    // Caso a criação do estudante seja bem-sucedida, pode retornar uma resposta ou apenas continuar o fluxo
-    return student // ou outra resposta que você precise
+    return student
   } catch (error) {
-    // Captura de erro
-    console.error('Erro ao criar o estudante:', error)
+    // Tratar erros de forma mais clara
+    if (error instanceof Error) {
+      throw new Error(`Erro ao criar o estudante: ${error.message}`)
+    }
+    throw new Error('Erro ao criar o estudante: erro desconhecido')
   }
-}
-
-export const findStudentById = async (studentId: string) => {
-  const student = await prismaClient.student.findUnique({
-    where: { id: studentId },
-  })
-  return student
 }

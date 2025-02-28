@@ -3,15 +3,12 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import {
   createRegistration,
   createRegistrationWithConfirmationStatus,
-} from '../../function/registration/create-registration'
-import { prismaClient } from '../../database/script'
-import type { FastifyTypeInstance } from '../../type'
-import {
-  findCourseById,
-  updateCourseVacancies,
-} from '../../function/course/create-course'
+} from '../models/registration'
+import { prismaClient } from '../database/script'
+import type { FastifyTypeInstance } from '../type'
+import { findCourseById, updateCourseVacancies } from '../models/course'
 
-export const createRegistrations: FastifyPluginAsyncZod = async (
+export const Registrations: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
   opts
 ) => {
@@ -40,6 +37,7 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
         }
 
         if (
+          !course ||
           course.availableVacancies === null ||
           course.availableVacancies <= 0
         ) {
@@ -53,7 +51,7 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
         })
 
         // 3. Atualizar o número de vagas disponíveis no curso
-        await updateCourseVacancies(course_id)
+        // await updateCourseVacancies(course_id)
 
         reply.code(201).send({
           message: 'Inscrição criada com sucesso',
@@ -97,6 +95,7 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
 
         if (
           course.availableVacancies === null ||
+          course?.availableVacancies === null ||
           course.availableVacancies <= 0
         ) {
           return reply.status(400).send({ message: 'Não há vagas disponíveis' })
@@ -172,6 +171,17 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
             .send({ message: 'ID do estudante não corresponde ao registro' })
         }
 
+        // 1. Verificar se o curso ainda tem vagas disponíveis
+        const course = await findCourseById(registration[0].course_id)
+
+        if (
+          !course ||
+          course?.availableVacancies === null ||
+          course.availableVacancies <= 0
+        ) {
+          return reply.status(400).send({ message: 'Não há vagas disponíveis' })
+        }
+
         // Atualizar o status de registro para 'CONFIRMADO'
         const updatedRegistrations = await prismaClient.registration.updateMany(
           {
@@ -179,6 +189,9 @@ export const createRegistrations: FastifyPluginAsyncZod = async (
             data: { registrationStatus }, // Atualiza o status para 'CONFIRMADO'
           }
         )
+
+        const course_id = registration[0].course_id
+        await updateCourseVacancies(course_id)
 
         if (updatedRegistrations.count === 0) {
           return reply

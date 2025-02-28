@@ -1,5 +1,5 @@
 import type { LevelCourse, Period } from '@prisma/client'
-import { prismaClient } from '../../database/script'
+import { prismaClient } from '../database/script'
 
 interface createCourseRequest {
   courseName: string
@@ -35,6 +35,11 @@ export async function createCourse({
   return course
 }
 
+export async function listAllCourses() {
+  const courses = await prismaClient.course.findMany()
+  return courses
+}
+
 // Função para buscar o curso pelo ID
 export async function findCourseById(course_id: string) {
   // Simulação de busca no banco de dados
@@ -48,4 +53,24 @@ export async function updateCourseVacancies(course_id: string) {
     where: { id: course_id },
     data: { availableVacancies: { decrement: 1 } },
   })
+}
+
+export async function findRelationshipBetweenCourseStudents(course_id: string) {
+  const course = await prismaClient.course.findUnique({
+    where: { id: course_id },
+    select: {
+      levelCourse: true,
+      courseName: true,
+      period: true,
+      courseDuration: true,
+      totalVacancies: true,
+      availableVacancies: true,
+      Registration: {
+        include: {
+          student: true,
+        },
+      },
+    },
+  })
+  return course
 }

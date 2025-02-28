@@ -1,5 +1,5 @@
 import type { DisciplineType, Semester, YearStudy } from '@prisma/client'
-import { prismaClient } from '../../../database/script'
+import { prismaClient } from '../database/script'
 
 interface createDisciplinesRequest {
   codigo: string

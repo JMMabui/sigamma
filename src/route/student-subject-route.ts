@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import type { FastifyTypeInstance } from '../type'
-import { createStudentSubject } from '../function/registration/student_subject_controller'
-import { findStudentById } from '../Controller/studentsController'
-import { findSubjectByCodigo } from '../function/registration/disciplines/create-disciplines'
+import { createStudentSubject } from '../models/student_subject'
+import { findStudentById } from '../models/students'
 import { prismaClient } from '../database/script'
+import { findSubjectByCodigo } from '../models/create-disciplines'
 
 export const Student_Subject: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

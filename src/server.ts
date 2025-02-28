@@ -1,25 +1,4 @@
 import { fastify } from 'fastify'
-import { getStudents } from './route/list/get-students-route'
-import { creatingAcessData } from './route/create/create-acessData-route'
-import { deleteAcessData } from './route/delete/delete-acessData-route'
-import { updateAcessData } from './route/update/update-acesseData-route'
-import { createdStudents } from './route/create/create-student-route'
-import { createdPreInstitutos } from './route/create/create-preschool-route'
-import {
-  getCourseId,
-  getCourseInStudent,
-  getStudentInCourse,
-} from './route/list/get-course-route'
-import { getAcessData } from './route/list/get-accessData-route'
-import { createCourses } from './route/create/create-course-route'
-import { createRegistrations } from './route/create/create-registration-route'
-import {
-  getRegistrationInCourse,
-  getRegistration,
-} from './route/list/get-registration-route'
-import { getDisciplineRoute } from './route/list/get-discipline-route'
-import { createDisciplines } from './route/create/create-disciplenes-route'
-import { updateCourseIdOnDisciplines } from './route/update/update-courseIdOnDisciplines-route'
 import { fastifyCors } from '@fastify/cors'
 import {
   jsonSchemaTransform,
@@ -29,10 +8,15 @@ import {
 } from 'fastify-type-provider-zod'
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
-import { createdStudentsLogin } from './route/create/create-login-students-route'
+import { StudentsLogin } from './route/login-students-route'
 import { Student_Subject } from './route/student-subject-route'
-import { teachersData } from './function/teacher/teacher-route'
 import { teacher_Subject } from './route/teacher-subject-route'
+import { Login } from './route/login-route'
+import { PreInstitutos } from './route/preschool-route'
+import { Courses } from './route/course-route'
+import { Registrations } from './route/registration-route'
+import { Subjects } from './route/subjects-route'
+import { teachersData } from './route/teacher-route'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -55,31 +39,16 @@ app.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
-app.register(getStudents)
-app.register(getCourseId)
-app.register(getAcessData)
-app.register(getRegistration)
-app.register(getDisciplineRoute)
-app.register(getRegistrationInCourse)
-app.register(getStudentInCourse)
-app.register(getCourseInStudent)
-
-app.register(creatingAcessData)
-app.register(createdStudentsLogin)
-app.register(createdStudents)
-app.register(createdPreInstitutos)
-app.register(createCourses)
-app.register(createRegistrations)
-app.register(createDisciplines)
+app.register(Login)
+app.register(StudentsLogin)
+app.register(PreInstitutos)
+app.register(Courses)
+app.register(Registrations)
+app.register(Subjects)
 
 app.register(Student_Subject)
 app.register(teachersData)
 app.register(teacher_Subject)
-
-app.register(updateAcessData)
-app.register(updateCourseIdOnDisciplines)
-
-app.register(deleteAcessData)
 
 app
   .listen({

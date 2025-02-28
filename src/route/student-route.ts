@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import dayjs from 'dayjs'
-import { createStudents } from '../../Controller/studentsController'
-import type { FastifyTypeInstance } from '../../type'
-import { prismaClient } from '../../database/script'
-import { createLogin } from '../../function/students/acess data/create-login-data'
+import { createStudents } from '../models/students'
+import type { FastifyTypeInstance } from '../type'
+import { prismaClient } from '../database/script'
+import { createLogin } from '../models/login'
 
 export const createdStudents: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

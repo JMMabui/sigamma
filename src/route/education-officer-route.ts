@@ -1,8 +1,8 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import type { FastifyTypeInstance } from '../../type'
+import type { FastifyTypeInstance } from '../type'
 import z from 'zod'
 import dayjs from 'dayjs'
-import { insertEducationOffice } from '../../function/students/educationOfficers'
+import { insertEducationOffice } from '../models/educationOfficers'
 
 export const createdStudents: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

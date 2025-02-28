@@ -1,13 +1,13 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import type { FastifyTypeInstance } from '../../type'
 import z from 'zod'
+import type { FastifyTypeInstance } from '../type'
 import {
   createTeacher,
-  deleteTeacher,
-  getTeacherById,
   listAllTeacher,
+  getTeacherById,
   updateTeacher,
-} from '../../Controller/teacherController'
+  deleteTeacher,
+} from '../models/teacher'
 
 export const teachersData: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

@@ -17,6 +17,7 @@ import { Courses } from './route/course-route'
 import { Registrations } from './route/registration-route'
 import { Subjects } from './route/subjects-route'
 import { teachersData } from './route/teacher-route'
+import { Students } from './route/student-route'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -40,6 +41,7 @@ app.register(fastifySwaggerUi, {
 })
 
 app.register(Login)
+app.register(Students)
 app.register(StudentsLogin)
 app.register(PreInstitutos)
 app.register(Courses)

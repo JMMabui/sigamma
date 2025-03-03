@@ -6,7 +6,6 @@ import {
   createSubjects,
   findSubjectByCodigo,
 } from '../models/create-disciplines'
-
 export const Subjects: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
   opts

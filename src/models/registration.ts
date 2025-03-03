@@ -40,7 +40,12 @@ export const createRegistrationWithConfirmationStatus = async ({
 }
 
 export async function listAllRegistrations() {
-  const data = await prismaClient.registration.findMany()
+  const data = await prismaClient.registration.findMany({
+    include: {
+      course: true,
+      student: true,
+    },
+  })
   return data
 }
 

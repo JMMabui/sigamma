@@ -83,8 +83,17 @@ export const Courses: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
-      const course = await listAllCourses()
-      return { course }
+      try {
+        const course = await listAllCourses()
+        reply.send({
+          course,
+        })
+      } catch (error) {
+        console.error('Database error while fetching students: ', error)
+        reply.code(500).send({
+          message: 'Could not retrieve courses, please try again later.',
+        })
+      }
     }
   )
 

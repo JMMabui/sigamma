@@ -3,6 +3,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import {
   createRegistration,
   createRegistrationWithConfirmationStatus,
+  listAllRegistrations,
 } from '../models/registration'
 import { prismaClient } from '../database/script'
 import type { FastifyTypeInstance } from '../type'
@@ -124,6 +125,20 @@ export const Registrations: FastifyPluginAsyncZod = async (
         }
         reply.code(500).send({ message: 'Erro interno do servidor' })
       }
+    }
+  )
+
+  app.get(
+    '/registration',
+    {
+      schema: {
+        tags: ['registration'],
+        description: 'list all registration',
+      },
+    },
+    async (request, reply) => {
+      const result = await listAllRegistrations()
+      return result
     }
   )
 

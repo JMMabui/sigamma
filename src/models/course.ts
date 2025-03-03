@@ -36,8 +36,8 @@ export async function createCourse({
 }
 
 export async function listAllCourses() {
-  const courses = await prismaClient.course.findMany()
-  return courses
+  const data = await prismaClient.course.findMany()
+  return data
 }
 
 // Função para buscar o curso pelo ID

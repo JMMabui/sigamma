@@ -1,5 +1,5 @@
 import type { DisciplineType, Semester, YearStudy } from '@prisma/client'
-import { prismaClient } from '../database/script'
+import { prismaClient } from '../../database/script'
 
 interface createDisciplinesRequest {
   codigo: string
@@ -49,8 +49,8 @@ export async function createSubjects({
   year_study,
   courseId,
 }: createSubjectsResponse) {
-  const subject = await prismaClient.discipline.create({
-    data: {
+  try {
+    console.log('Criando disciplina com os seguintes dados:', {
       codigo,
       credits,
       disciplineName,
@@ -59,10 +59,27 @@ export async function createSubjects({
       semester,
       year_study,
       courseId,
-    },
-  })
+    })
 
-  return subject
+    const subject = await prismaClient.discipline.create({
+      data: {
+        codigo,
+        credits,
+        disciplineName,
+        disciplineType,
+        hcs,
+        semester,
+        year_study,
+        courseId,
+      },
+    })
+
+    console.log('Disciplina criada com sucesso:', subject)
+    return subject
+  } catch (error) {
+    console.error('Erro ao criar disciplina:', error)
+    throw error // Re-lança o erro para que ele seja tratado na camada superior
+  }
 }
 
 export function findSubjectByCodigo(codigo: string) {

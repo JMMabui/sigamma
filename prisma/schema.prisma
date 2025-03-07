@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,10 +26,10 @@ enum Gender {
 }
 
 enum MaritalStatus {
-  SOLTEIRO // Solteiro(a)
-  CASADO // Casado(a)
-  DIVORCIADO // Divorciado(a)
-  VIUVO // Viúvo(a)
+  SOLTEIRO
+  CASADO
+  DIVORCIADO
+  VIUVO
 }
 
 enum ProvincyAddress {
@@ -119,7 +116,7 @@ model Student {
   id                 String            @id @default(uuid())
   surname            String
   name               String
-  dataOfBirth        DateTime          @map("date_of_birth")
+  dateOfBirth        DateTime          @map("date_of_birth")
   placeOfBirth       String            @map("place_of_birth")
   gender             Gender
   maritalStatus      MaritalStatus     @map("marital_status")
@@ -133,18 +130,18 @@ model Student {
   documentExpiredAt  DateTime          @map("document_expired_at")
   nuit               Int               @unique
   educationOfficerId String?           @map("education_officer_id")
-  login_id           String?           @unique
-  loginData          LoginData?        @relation(fields: [login_id], references: [id]) // Relacionamento com LoginData
-  EducationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
+  loginId            String?           @unique @map("login_id")
+  loginData          LoginData?        @relation(fields: [loginId], references: [id])
+  educationOfficer   EducationOfficer? @relation(fields: [educationOfficerId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  // Relacionamentos:
   Registration      Registration[] // Relacionamento com Registration
   PreSchool         PreSchool[] // Relacionamento com PreSchool
   StudentDiscipline StudentDiscipline[] // Relacionamento com StudentDiscipline
-  StudentsClasses   StudentsClasses[]
+  Classes           Classes?            @relation(fields: [classesId], references: [id])
+  classesId         String?
 
   @@map("student")
 }
@@ -156,8 +153,8 @@ model PreSchool {
   schoolProvincy ProvincyAddress @map("school_provincy")
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
-  student_id     String
-  student        Student         @relation(fields: [student_id], references: [id])
+  studentId      String          @map("student_id")
+  student        Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("pre_school")
 }
@@ -166,7 +163,7 @@ model EducationOfficer {
   id              String          @id @default(uuid())
   fullName        String
   profession      String
-  dataOfBirth     DateTime        @map("data_of_birth")
+  dateOfBirth     DateTime        @map("date_of_birth")
   email           String?         @unique
   contact         String
   provincyAddress ProvincyAddress @map("provincy_address")
@@ -198,28 +195,31 @@ model Course {
 
 model Registration {
   id                 String    @id @default(uuid())
-  student_id         String
-  course_id          String    @map("course_id")
+  studentId          String    @map("student_id")
+  courseId           String    @map("course_id")
   registrationStatus Status    @default(PENDENTE) @map("registration_status")
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime? @map("updated_at")
 
-  student Student @relation(fields: [student_id], references: [id])
-  course  Course  @relation(fields: [course_id], references: [id])
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("registration")
 }
 
 model Classes {
-  id              String            @id @default(uuid())
-  className       String            @map("class_name")
-  course_id       String            @map("course_id")
-  description     String
-  status          StatusClasses     @default(DESATIVADO)
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime?         @map("updated_at")
-  course          Course            @relation(fields: [course_id], references: [id])
-  StudentsClasses StudentsClasses[]
+  id         String        @id @default(uuid())
+  className  String        @map("class_name")
+  courseId   String        @map("course_id")
+  year       String
+  yearStudy  YearStudy     @map("year_study")
+  semester   Semester
+  status     StatusClasses @default(DESATIVADO)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime?     @map("updated_at")
+  course     Course        @relation(fields: [courseId], references: [id])
+  Students   Student[]
+  discipline Discipline[]
 
   @@map("classes")
 }
@@ -227,7 +227,7 @@ model Classes {
 model Discipline {
   codigo            String              @id
   disciplineName    String              @map("discipline_name")
-  year_study        YearStudy           @map("year_study")
+  yearStudy         YearStudy           @map("year_study")
   semester          Semester
   hcs               Int                 @map("hcs")
   credits           Int
@@ -238,20 +238,22 @@ model Discipline {
   Course            Course?             @relation(fields: [courseId], references: [id])
   StudentDiscipline StudentDiscipline[]
   TeacherDiscipline TeacherDiscipline[]
+  Classes           Classes?            @relation(fields: [classesId], references: [id])
+  classesId         String?
 
   @@map("disciplines")
 }
 
 model StudentDiscipline {
   id           String    @id @default(uuid())
-  student_id   String
-  disciplineId String
+  studentId    String    @map("student_id")
+  disciplineId String    @map("discipline_id")
   status       Status    @default(NAO_INSCRITO)
   result       Result    @default(REPROVADO)
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @map("updated_at")
 
-  student    Student    @relation(fields: [student_id], references: [id])
+  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
   discipline Discipline @relation(fields: [disciplineId], references: [codigo])
 
   @@map("student_discipline")
@@ -273,26 +275,13 @@ model Teacher {
 
 model TeacherDiscipline {
   id           String    @id @default(uuid())
-  teacher_id   String
-  disciplineId String
+  teacherId    String    @map("teacher_id")
+  disciplineId String    @map("discipline_id")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @map("updated_at")
 
-  teacher    Teacher    @relation(fields: [teacher_id], references: [id])
+  teacher    Teacher    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   discipline Discipline @relation(fields: [disciplineId], references: [codigo])
 
   @@map("teacher_discipline")
-}
-
-model StudentsClasses {
-  id         String    @id @default(uuid())
-  student_id String
-  class_id   String
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @map("updated_at")
-
-  student Student @relation(fields: [student_id], references: [id])
-  classes Classes @relation(fields: [class_id], references: [id])
-
-  @@map("students_classes")
 }

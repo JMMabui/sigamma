@@ -4,10 +4,13 @@ import {
   createRegistration,
   createRegistrationWithConfirmationStatus,
   listAllRegistrations,
-} from '../models/registration'
+} from '../models/academic-/registration'
 import { prismaClient } from '../database/script'
 import type { FastifyTypeInstance } from '../type'
-import { findCourseById, updateCourseVacancies } from '../models/course'
+import {
+  findCourseById,
+  updateCourseVacancies,
+} from '../models/academic-/course'
 
 export const Registrations: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

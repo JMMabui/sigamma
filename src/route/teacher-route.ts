@@ -7,7 +7,7 @@ import {
   getTeacherById,
   updateTeacher,
   deleteTeacher,
-} from '../models/teacher'
+} from '../models/academic-/teacher'
 
 export const teachersData: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

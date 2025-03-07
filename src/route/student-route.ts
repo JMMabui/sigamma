@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import dayjs from 'dayjs'
-import { createStudents, listAllStudents } from '../models/students'
+import { createStudents, listAllStudents } from '../models/academic-/students'
 import type { FastifyTypeInstance } from '../type'
 import { prismaClient } from '../database/script'
-import { createLogin } from '../models/login'
+import { createLogin } from '../models/academic-/login'
 
 export const Students: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
@@ -331,9 +331,7 @@ export const Students: FastifyPluginAsyncZod = async (
     async (request, reply) => {
       try {
         const students = await listAllStudents()
-        reply.send({
-          students,
-        })
+        reply.send(students)
       } catch (error) {
         console.error('Database error while fetching students: ', error)
         reply.code(500).send({

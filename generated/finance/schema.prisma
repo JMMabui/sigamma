@@ -1,0 +1,158 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/finance" // Gera Prisma Client separado
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Mesma conexão do schema acadêmico
+  schemas  = ["finance"] // Definir schema diferente
+}
+
+model Invoice {
+  id             String        @id @default(uuid())
+  studentId      String
+  amount         Float // Valor total da fatura
+  dueDate        DateTime // Data de vencimento
+  status         InvoiceStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime?     @updatedAt
+  penaltyAmount  Float         @default(0) // Multa associada à fatura
+  discountAmount Float         @default(0) // Desconto aplicado
+  totalAmount    Float         @default(0) // Valor total após multas e descontos
+  paymentPlanId  String?       @unique // Garantir que cada fatura tenha um único plano de pagamento
+
+  payments    Payment[] // Pagamentos associados à fatura
+  penalties   Penalty[] // Multas associadas à fatura
+  discounts   Discount[] // Descontos aplicados à fatura
+  paymentPlan PaymentPlan? @relation("InvoicePaymentPlan")
+
+  @@map("invoice")
+  @@schema(map: "finance")
+}
+
+enum InvoiceStatus {
+  PENDING // Fatura pendente
+  PAID // Fatura paga
+  OVERDUE // Fatura vencida
+  CANCELED // Fatura cancelada
+
+  @@schema(map: "finance")
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  invoiceId   String
+  amount      Float // Valor do pagamento
+  paymentDate DateTime      @default(now())
+  method      PaymentMethod // Método de pagamento
+  status      PaymentStatus @default(PENDING) // Status do pagamento
+  createdAt   DateTime      @default(now())
+
+  invoice            Invoice              @relation(fields: [invoiceId], references: [id]) // Relacionado com Invoice
+  transactionHistory TransactionHistory[] // Transações associadas ao pagamento
+  Refund             Refund[] // Reembolsos associados ao pagamento
+
+  @@map("payment")
+  @@schema(map: "finance")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  MOBILE_MONEY
+  CASH
+
+  @@schema(map: "finance")
+}
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+
+  @@schema(map: "finance")
+}
+
+model TransactionHistory {
+  id              String   @id @default(uuid())
+  paymentId       String
+  description     String
+  transactionDate DateTime @default(now())
+  amount          Float
+  createdAt       DateTime @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("transaction_history")
+  @@schema(map: "finance")
+}
+
+model Penalty {
+  id        String   @id @default(uuid())
+  invoiceId String
+  amount    Float // Valor da multa
+  reason    String // Motivo da multa
+  appliedAt DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@map("penalty")
+  @@schema(map: "finance")
+}
+
+model Discount {
+  id        String   @id @default(uuid())
+  invoiceId String
+  amount    Float // Valor do desconto
+  reason    String // Motivo do desconto
+  appliedAt DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@map("discount")
+  @@schema(map: "finance")
+}
+
+model PaymentPlan {
+  id                String   @id @default(uuid())
+  invoiceId         String   @unique // Relacionado à fatura, deve ser único para garantir um-para-um
+  totalAmount       Float // Valor total da fatura
+  numInstallments   Int // Número de parcelas
+  installmentAmount Float // Valor de cada parcela
+  startDate         DateTime @default(now())
+  dueDate           DateTime // Data de vencimento da última parcela
+  createdAt         DateTime @default(now())
+
+  invoice Invoice @relation("InvoicePaymentPlan", fields: [invoiceId], references: [id]) // Relacionamento com Invoice
+
+  @@map("payment_plan")
+  @@schema(map: "finance")
+}
+
+model Refund {
+  id         String   @id @default(uuid())
+  paymentId  String
+  amount     Float // Valor do reembolso
+  refundedAt DateTime @default(now())
+  reason     String // Motivo do reembolso
+
+  payment Payment @relation(fields: [paymentId], references: [id]) // Relacionado ao pagamento
+
+  @@map("refund")
+  @@schema(map: "finance")
+}
+
+model TuitionFee {
+  id        String   @id @default(uuid())
+  courseId  String
+  amount    Float
+  year      Int
+  semester  Int
+  createdAt DateTime @default(now())
+
+  @@map("tuition_fee")
+  @@schema(map: "finance")
+}

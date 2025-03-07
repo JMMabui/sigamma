@@ -4,7 +4,7 @@ import type {
   ProvincyAddress,
   DocumentType,
 } from '@prisma/client'
-import { prismaClient } from '../database/script'
+import { prismaClient } from '../../database/script'
 import bcrypt from 'bcryptjs'
 
 // Definição do tipo para loginData

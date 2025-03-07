@@ -6,7 +6,7 @@ import {
   findCourseById,
   findRelationshipBetweenCourseStudents,
   listAllCourses,
-} from '../models/course'
+} from '../models/academic-/course'
 import type { FastifyTypeInstance } from '../type'
 
 export const Courses: FastifyPluginAsyncZod = async (
@@ -85,9 +85,7 @@ export const Courses: FastifyPluginAsyncZod = async (
     async (request, reply) => {
       try {
         const course = await listAllCourses()
-        reply.send({
-          course,
-        })
+        reply.send(course)
       } catch (error) {
         console.error('Database error while fetching students: ', error)
         reply.code(500).send({

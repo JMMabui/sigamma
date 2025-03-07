@@ -5,7 +5,7 @@ import { prismaClient } from '../database/script'
 import {
   createSubjects,
   findSubjectByCodigo,
-} from '../models/create-disciplines'
+} from '../models/academic-/create-disciplines'
 export const Subjects: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,
   opts
@@ -93,7 +93,7 @@ export const Subjects: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
-      console.log('api iniciado', request.body)
+      // console.log('api iniciado', request.body)
       const {
         codigo,
         credits,
@@ -117,9 +117,7 @@ export const Subjects: FastifyPluginAsyncZod = async (
           courseId,
         })
 
-        return reply
-          .code(201)
-          .send({ message: 'Discipline created successfully' })
+        return reply.code(201).send(subject)
       } catch (error) {
         if (error instanceof z.ZodError) {
           return reply.status(400).send({
@@ -127,7 +125,12 @@ export const Subjects: FastifyPluginAsyncZod = async (
             errors: error.errors,
           })
         }
-        reply.code(500).send({ message: 'Internal server error' })
+        console.error('Erro interno:', error)
+
+        reply.code(500).send({
+          message: 'Internal server error',
+          error: error instanceof Error ? error.message : 'Erro desconhecido',
+        })
       }
     }
   )
@@ -142,7 +145,7 @@ export const Subjects: FastifyPluginAsyncZod = async (
     },
     async (request, reply) => {
       const discipline = await prismaClient.discipline.findMany()
-      return { discipline }
+      return reply.send(discipline)
     }
   )
 

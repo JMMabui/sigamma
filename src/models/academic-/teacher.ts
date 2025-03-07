@@ -1,5 +1,5 @@
 import type { TeacherType } from '@prisma/client'
-import { prismaClient } from '../database/script'
+import { prismaClient } from '../../database/script'
 
 interface Schema {
   fullName: string

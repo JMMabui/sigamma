@@ -4,7 +4,11 @@ import bcrypt from 'bcrypt'
 import { prismaClient } from '../database/script'
 import jwt from 'jsonwebtoken'
 import type { FastifyTypeInstance } from '../type'
-import { createLogin, deleteLogin, updateLogin } from '../models/login'
+import {
+  createLogin,
+  deleteLogin,
+  updateLogin,
+} from '../models/academic-/login'
 
 // Função para encontrar o usuário por email
 async function findUserByEmail(email: string) {

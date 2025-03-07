@@ -1,13 +1,13 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import type { FastifyTypeInstance } from '../type'
 import z from 'zod'
-import { getTeacherById } from '../models/teacher'
+import { getTeacherById } from '../models/academic-/teacher'
 import {
   createTeacherSubject,
   getTeacherSubjectById,
   listAllTeacherSubject,
-} from '../models/teacher_subject'
-import { findSubjectByCodigo } from '../models/create-disciplines'
+} from '../models/academic-/teacher_subject'
+import { findSubjectByCodigo } from '../models/academic-/create-disciplines'
 
 export const teacher_Subject: FastifyPluginAsyncZod = async (
   app: FastifyTypeInstance,

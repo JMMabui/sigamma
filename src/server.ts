@@ -18,6 +18,14 @@ import { Registrations } from './route/registration-route'
 import { Subjects } from './route/subjects-route'
 import { teachersData } from './route/teacher-route'
 import { Students } from './route/student-route'
+import { Invoice } from './route/finance/invoice-route'
+import { discount } from './route/finance/discount-route'
+import { payment } from './route/finance/payment-route'
+import { paymentsPlane } from './route/finance/paymentsPlan'
+import { penalty } from './route/finance/penalty'
+import { refund } from './route/finance/refund'
+import { transactionHistory } from './route/finance/transationHistory'
+import { tuitionFee } from './route/finance/tuitionFee'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -51,6 +59,16 @@ app.register(Subjects)
 app.register(Student_Subject)
 app.register(teachersData)
 app.register(teacher_Subject)
+
+// route for finance
+app.register(Invoice)
+app.register(discount)
+app.register(payment)
+app.register(paymentsPlane)
+app.register(penalty)
+app.register(refund)
+app.register(transactionHistory)
+app.register(tuitionFee)
 
 app
   .listen({

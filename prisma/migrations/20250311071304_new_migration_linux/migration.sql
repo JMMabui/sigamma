@@ -17,7 +17,7 @@ CREATE TYPE "ProvincyAddress" AS ENUM ('MAPUTO_CIDADE', 'MAPUTO_PROVINCIA', 'GAZ
 CREATE TYPE "PreLevel" AS ENUM ('CLASSE_10', 'CLASSE_12', 'LICENCIATURA');
 
 -- CreateEnum
-CREATE TYPE "Type" AS ENUM ('BI', 'PASSAPORTE');
+CREATE TYPE "DocumentType" AS ENUM ('BI', 'PASSAPORTE');
 
 -- CreateEnum
 CREATE TYPE "Status" AS ENUM ('PENDENTE', 'CONFIRMADO', 'CANCELADO', 'TRANCADO', 'INSCRITO', 'NAO_INSCRITO');
@@ -30,6 +30,15 @@ CREATE TYPE "YearStudy" AS ENUM ('PRIMEIRO_ANO', 'SEGUNDO_ANO', 'TERCEIRO_ANO', 
 
 -- CreateEnum
 CREATE TYPE "Semester" AS ENUM ('PRIMEIRO_SEMESTRE', 'SEGUNDO_SEMESTRE');
+
+-- CreateEnum
+CREATE TYPE "Result" AS ENUM ('APROVADO', 'REPROVADO');
+
+-- CreateEnum
+CREATE TYPE "StatusClasses" AS ENUM ('EM_ATIVIDADE', 'DESATIVADO');
+
+-- CreateEnum
+CREATE TYPE "TeacherType" AS ENUM ('COORDENADOR', 'DOCENTE', 'AUXILIAR');
 
 -- CreateTable
 CREATE TABLE "login_data" (
@@ -56,7 +65,7 @@ CREATE TABLE "student" (
     "address" TEXT NOT NULL,
     "father_name" TEXT NOT NULL,
     "mother_name" TEXT NOT NULL,
-    "document_type" "Type" NOT NULL,
+    "document_type" "DocumentType" NOT NULL,
     "document_number" TEXT NOT NULL,
     "document_issued_at" TIMESTAMP(3) NOT NULL,
     "document_expired_at" TIMESTAMP(3) NOT NULL,
@@ -65,6 +74,7 @@ CREATE TABLE "student" (
     "login_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "classesId" TEXT,
 
     CONSTRAINT "student_pkey" PRIMARY KEY ("id")
 );
@@ -87,7 +97,7 @@ CREATE TABLE "education_officer" (
     "id" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "profession" TEXT NOT NULL,
-    "data_of_birth" TIMESTAMP(3) NOT NULL,
+    "date_of_birth" TIMESTAMP(3) NOT NULL,
     "email" TEXT,
     "contact" TEXT NOT NULL,
     "provincy_address" "ProvincyAddress" NOT NULL,
@@ -127,6 +137,21 @@ CREATE TABLE "registration" (
 );
 
 -- CreateTable
+CREATE TABLE "classes" (
+    "id" TEXT NOT NULL,
+    "class_name" TEXT NOT NULL,
+    "course_id" TEXT NOT NULL,
+    "year" TEXT NOT NULL,
+    "year_study" "YearStudy" NOT NULL,
+    "semester" "Semester" NOT NULL,
+    "status" "StatusClasses" NOT NULL DEFAULT 'DESATIVADO',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "disciplines" (
     "codigo" TEXT NOT NULL,
     "discipline_name" TEXT NOT NULL,
@@ -138,7 +163,7 @@ CREATE TABLE "disciplines" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "course_id" TEXT,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "teacherId" TEXT,
+    "classesId" TEXT,
 
     CONSTRAINT "disciplines_pkey" PRIMARY KEY ("codigo")
 );
@@ -147,8 +172,9 @@ CREATE TABLE "disciplines" (
 CREATE TABLE "student_discipline" (
     "id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
-    "disciplineId" TEXT NOT NULL,
+    "discipline_id" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'NAO_INSCRITO',
+    "result" "Result" NOT NULL DEFAULT 'REPROVADO',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -159,16 +185,25 @@ CREATE TABLE "student_discipline" (
 CREATE TABLE "teacher" (
     "id" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
-    "profession" TEXT NOT NULL,
-    "data_of_birth" TIMESTAMP(3) NOT NULL,
     "email" TEXT NOT NULL,
     "contact" TEXT NOT NULL,
-    "provincy_address" "ProvincyAddress" NOT NULL,
-    "address" TEXT NOT NULL,
+    "profession" TEXT NOT NULL,
+    "type" "TeacherType" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "teacher_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "teacher_discipline" (
+    "id" TEXT NOT NULL,
+    "teacher_id" TEXT NOT NULL,
+    "discipline_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "teacher_discipline_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -193,22 +228,34 @@ ALTER TABLE "student" ADD CONSTRAINT "student_login_id_fkey" FOREIGN KEY ("login
 ALTER TABLE "student" ADD CONSTRAINT "student_education_officer_id_fkey" FOREIGN KEY ("education_officer_id") REFERENCES "education_officer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pre_school" ADD CONSTRAINT "pre_school_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "student" ADD CONSTRAINT "student_classesId_fkey" FOREIGN KEY ("classesId") REFERENCES "classes"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "registration" ADD CONSTRAINT "registration_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "pre_school" ADD CONSTRAINT "pre_school_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "registration" ADD CONSTRAINT "registration_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "registration" ADD CONSTRAINT "registration_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "registration" ADD CONSTRAINT "registration_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "classes" ADD CONSTRAINT "classes_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "disciplines" ADD CONSTRAINT "disciplines_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "disciplines" ADD CONSTRAINT "disciplines_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "teacher"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "disciplines" ADD CONSTRAINT "disciplines_classesId_fkey" FOREIGN KEY ("classesId") REFERENCES "classes"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "student_discipline" ADD CONSTRAINT "student_discipline_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "student_discipline" ADD CONSTRAINT "student_discipline_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "student_discipline" ADD CONSTRAINT "student_discipline_disciplineId_fkey" FOREIGN KEY ("disciplineId") REFERENCES "disciplines"("codigo") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "student_discipline" ADD CONSTRAINT "student_discipline_discipline_id_fkey" FOREIGN KEY ("discipline_id") REFERENCES "disciplines"("codigo") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teacher_discipline" ADD CONSTRAINT "teacher_discipline_teacher_id_fkey" FOREIGN KEY ("teacher_id") REFERENCES "teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teacher_discipline" ADD CONSTRAINT "teacher_discipline_discipline_id_fkey" FOREIGN KEY ("discipline_id") REFERENCES "disciplines"("codigo") ON DELETE RESTRICT ON UPDATE CASCADE;

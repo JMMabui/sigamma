@@ -345,7 +345,7 @@ export namespace Prisma {
   export type DecimalJsLike = runtime.DecimalJsLike
 
   /**
-   * Metrics 
+   * Metrics
    */
   export type Metrics = runtime.Metrics
   export type Metric<T> = runtime.Metric<T>
@@ -363,14 +363,14 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.2.1
-   * Query Engine version: 4123509d24aa4dede1e864b46351bf2790323b69
+   * Prisma Client JS version: 6.4.1
+   * Query Engine version: a9055b89e58b4b5bfb59600785423b1db3d0e75d
    */
   export type PrismaVersion = {
     client: string
   }
 
-  export const prismaVersion: PrismaVersion 
+  export const prismaVersion: PrismaVersion
 
   /**
    * Utility Types
@@ -386,15 +386,15 @@ export namespace Prisma {
 
   /**
    * Types of the values used to represent different kinds of `null` values when working with JSON fields.
-   * 
+   *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
   namespace NullTypes {
     /**
     * Type of `Prisma.DbNull`.
-    * 
+    *
     * You cannot use other instances of this class. Please use the `Prisma.DbNull` value.
-    * 
+    *
     * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
     */
     class DbNull {
@@ -404,9 +404,9 @@ export namespace Prisma {
 
     /**
     * Type of `Prisma.JsonNull`.
-    * 
+    *
     * You cannot use other instances of this class. Please use the `Prisma.JsonNull` value.
-    * 
+    *
     * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
     */
     class JsonNull {
@@ -416,9 +416,9 @@ export namespace Prisma {
 
     /**
     * Type of `Prisma.AnyNull`.
-    * 
+    *
     * You cannot use other instances of this class. Please use the `Prisma.AnyNull` value.
-    * 
+    *
     * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
     */
     class AnyNull {
@@ -429,21 +429,21 @@ export namespace Prisma {
 
   /**
    * Helper for filtering JSON entries that have `null` on the database (empty on the db)
-   * 
+   *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
   export const DbNull: NullTypes.DbNull
 
   /**
    * Helper for filtering JSON entries that have JSON `null` values (not empty on the db)
-   * 
+   *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
   export const JsonNull: NullTypes.JsonNull
 
   /**
    * Helper for filtering JSON entries that are `Prisma.DbNull` or `Prisma.JsonNull`
-   * 
+   *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
    */
   export const AnyNull: NullTypes.AnyNull
@@ -2703,6 +2703,10 @@ export namespace Prisma {
      * Filter which Invoices to update
      */
     where?: InvoiceWhereInput
+    /**
+     * Limit how many Invoices to update.
+     */
+    limit?: number
   }
 
   /**
@@ -2725,6 +2729,10 @@ export namespace Prisma {
      * Filter which Invoices to update
      */
     where?: InvoiceWhereInput
+    /**
+     * Limit how many Invoices to update.
+     */
+    limit?: number
   }
 
   /**
@@ -2787,6 +2795,10 @@ export namespace Prisma {
      * Filter which Invoices to delete
      */
     where?: InvoiceWhereInput
+    /**
+     * Limit how many Invoices to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -3906,6 +3918,10 @@ export namespace Prisma {
      * Filter which Payments to update
      */
     where?: PaymentWhereInput
+    /**
+     * Limit how many Payments to update.
+     */
+    limit?: number
   }
 
   /**
@@ -3928,6 +3944,10 @@ export namespace Prisma {
      * Filter which Payments to update
      */
     where?: PaymentWhereInput
+    /**
+     * Limit how many Payments to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -3994,6 +4014,10 @@ export namespace Prisma {
      * Filter which Payments to delete
      */
     where?: PaymentWhereInput
+    /**
+     * Limit how many Payments to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -5047,6 +5071,10 @@ export namespace Prisma {
      * Filter which TransactionHistories to update
      */
     where?: TransactionHistoryWhereInput
+    /**
+     * Limit how many TransactionHistories to update.
+     */
+    limit?: number
   }
 
   /**
@@ -5069,6 +5097,10 @@ export namespace Prisma {
      * Filter which TransactionHistories to update
      */
     where?: TransactionHistoryWhereInput
+    /**
+     * Limit how many TransactionHistories to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -5135,6 +5167,10 @@ export namespace Prisma {
      * Filter which TransactionHistories to delete
      */
     where?: TransactionHistoryWhereInput
+    /**
+     * Limit how many TransactionHistories to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -6127,6 +6163,10 @@ export namespace Prisma {
      * Filter which Penalties to update
      */
     where?: PenaltyWhereInput
+    /**
+     * Limit how many Penalties to update.
+     */
+    limit?: number
   }
 
   /**
@@ -6149,6 +6189,10 @@ export namespace Prisma {
      * Filter which Penalties to update
      */
     where?: PenaltyWhereInput
+    /**
+     * Limit how many Penalties to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -6215,6 +6259,10 @@ export namespace Prisma {
      * Filter which Penalties to delete
      */
     where?: PenaltyWhereInput
+    /**
+     * Limit how many Penalties to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -7207,6 +7255,10 @@ export namespace Prisma {
      * Filter which Discounts to update
      */
     where?: DiscountWhereInput
+    /**
+     * Limit how many Discounts to update.
+     */
+    limit?: number
   }
 
   /**
@@ -7229,6 +7281,10 @@ export namespace Prisma {
      * Filter which Discounts to update
      */
     where?: DiscountWhereInput
+    /**
+     * Limit how many Discounts to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -7295,6 +7351,10 @@ export namespace Prisma {
      * Filter which Discounts to delete
      */
     where?: DiscountWhereInput
+    /**
+     * Limit how many Discounts to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -8334,6 +8394,10 @@ export namespace Prisma {
      * Filter which PaymentPlans to update
      */
     where?: PaymentPlanWhereInput
+    /**
+     * Limit how many PaymentPlans to update.
+     */
+    limit?: number
   }
 
   /**
@@ -8356,6 +8420,10 @@ export namespace Prisma {
      * Filter which PaymentPlans to update
      */
     where?: PaymentPlanWhereInput
+    /**
+     * Limit how many PaymentPlans to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -8422,6 +8490,10 @@ export namespace Prisma {
      * Filter which PaymentPlans to delete
      */
     where?: PaymentPlanWhereInput
+    /**
+     * Limit how many PaymentPlans to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -9414,6 +9486,10 @@ export namespace Prisma {
      * Filter which Refunds to update
      */
     where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to update.
+     */
+    limit?: number
   }
 
   /**
@@ -9436,6 +9512,10 @@ export namespace Prisma {
      * Filter which Refunds to update
      */
     where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to update.
+     */
+    limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -9502,6 +9582,10 @@ export namespace Prisma {
      * Filter which Refunds to delete
      */
     where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -10468,6 +10552,10 @@ export namespace Prisma {
      * Filter which TuitionFees to update
      */
     where?: TuitionFeeWhereInput
+    /**
+     * Limit how many TuitionFees to update.
+     */
+    limit?: number
   }
 
   /**
@@ -10490,6 +10578,10 @@ export namespace Prisma {
      * Filter which TuitionFees to update
      */
     where?: TuitionFeeWhereInput
+    /**
+     * Limit how many TuitionFees to update.
+     */
+    limit?: number
   }
 
   /**
@@ -10544,6 +10636,10 @@ export namespace Prisma {
      * Filter which TuitionFees to delete
      */
     where?: TuitionFeeWhereInput
+    /**
+     * Limit how many TuitionFees to delete.
+     */
+    limit?: number
   }
 
   /**

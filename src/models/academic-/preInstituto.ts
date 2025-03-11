@@ -5,21 +5,21 @@ interface preInstitutoRequest {
   schoolLevel: PreLevel
   schoolName: string
   schoolProvincy: ProvincyAddress
-  student_id: string
+  studentId: string
 }
 
 export async function createdPreInstituto({
   schoolLevel,
   schoolName,
   schoolProvincy,
-  student_id,
+  studentId,
 }: preInstitutoRequest) {
   const data = await prismaClient.preSchool.create({
     data: {
       schoolLevel,
       schoolName,
       schoolProvincy,
-      student_id,
+      studentId,
     },
   })
 
@@ -43,7 +43,7 @@ export async function getPreInstitutoById(id: string) {
 export async function getPreInstitutoByStudentId(student_id: string) {
   const data = await prismaClient.preSchool.findMany({
     where: {
-      student_id,
+      studentId,
     },
   })
   return data

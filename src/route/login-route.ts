@@ -19,7 +19,7 @@ async function findUserByEmail(email: string) {
 
 async function findStudentId(id: string) {
   const student_id = prismaClient.student.findUnique({
-    where: { login_id: id },
+    where: { loginId: id },
     select: {
       id: true,
     },
